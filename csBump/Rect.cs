@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
+using csBump.util;
 
 namespace csBump
 {
@@ -50,9 +51,15 @@ namespace csBump
 
 		public static void Rect_getNearestCorner(float x, float y, float w, float h, float px, float py, Point result)
 		{
-			result[Nearest(px, x, x + w)] = Nearest(py, y, y + h);
+			result.Set(Extra.Nearest(px, x, x + w), Extra.Nearest(py, y, y + h));
 		}
 
+		/// <summary>
+		/// This is a generalized implementation of the Liang-Barsky algorithm, which also returns
+		/// the normals of the sides where the segment intersects.
+		/// Notice that normals are only guaranteed to be accurate when initially ti1 == -Float.MAX_VALUE, ti2 == Float.MAX_VALUE
+		/// </summary>
+		/// <returns>false if the segment never touches the rect</returns>
 		public static bool Rect_getSegmentIntersectionIndices(float x, float y, float w, float h, float x1, float y1, float x2, float y2, float ti1, float ti2, Point ti, IntPoint n1, IntPoint n2)
 		{
 			float dx = x2 - x1;
@@ -64,27 +71,25 @@ namespace csBump
 			{
 				switch (side)
 				{
-					case 1:
+					case 1: //left
 						nx = -1;
 						ny = 0;
 						p = -dx;
 						q = x1 - x;
 						break;
-					case 2:
+					case 2: //right
 						nx = 1;
 						ny = 0;
 						p = dx;
 						q = x + w - x1;
 						break;
-					case 3:
+					case 3: //top
 						nx = 0;
 						ny = -1;
 						p = -dy;
 						q = y1 - y;
 						break;
-					default:
-
-						//bottom
+					default: //bottom
 						nx = 0;
 						ny = 1;
 						p = dy;
@@ -131,9 +136,9 @@ namespace csBump
 				}
 			}
 
-			ti[ti1] = ti2;
-			n1[nx1] = ny1;
-			n2[nx2] = ny2;
+			ti.Set(ti1, ti2);
+			n1.Set(nx1, ny1);
+			n2.Set(nx2, ny2);
 			return true;
 		}
 
@@ -147,7 +152,7 @@ namespace csBump
 
 		public static bool Rect_containsPoint(float x, float y, float w, float h, float px, float py)
 		{
-			return px - x > DELTA && py - y > DELTA && x + w - px > DELTA && y + h - py > DELTA;
+			return px - x > Extra.DELTA && py - y > Extra.DELTA && x + w - px > Extra.DELTA && y + h - py > Extra.DELTA;
 		}
 
 		public static bool Rect_isIntersecting(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)

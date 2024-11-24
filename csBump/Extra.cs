@@ -21,7 +21,7 @@ using System.Text;
 
 namespace csBump
 {
-	public class Extra
+	public static class Extra
 	{
 		public static float DELTA = 1E-05F;
 		public static int Sign(float x)

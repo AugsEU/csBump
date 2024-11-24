@@ -67,7 +67,7 @@ namespace csBump
 			}
 		}
 
-		public virtual string ToString()
+		public override string ToString()
 		{
 			return "(" + x + ", " + y + ')';
 		}
