@@ -13,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 
 namespace csBump
 {
@@ -43,19 +38,33 @@ namespace csBump
 			this.y = y;
 		}
 
-		public virtual bool Equals(object o)
+		public override bool Equals(object? o)
 		{
-			if (this == o)
+			if (ReferenceEquals(this, o))
+			{
 				return true;
+			}
+
 			if (o == null || GetType() != o.GetType())
+			{
 				return false;
+			}
+
 			Point point = (Point)o;
-			return Float.Compare(point.x, x) == 0 && Float.Compare(point.y, y) == 0;
+
+			return point.x == x && point.y == y;
 		}
 
-		public virtual int GetHashCode()
+		public override int GetHashCode()
 		{
-			return (int)(Float.FloatToIntBits(x) * 0xC13FA9A902A6328F + Float.FloatToIntBits(y) * 0x91E10DA5C79E7B1D >>> 32);
+			unchecked
+			{
+				// Combine the hash codes of x and y
+				int hash = 1471;
+				hash = hash * 2647 + x.GetHashCode();
+				hash = hash * 6091 + y.GetHashCode();
+				return hash;
+			}
 		}
 
 		public virtual string ToString()
