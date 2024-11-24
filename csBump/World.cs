@@ -24,7 +24,7 @@ using static csBump.Response;
 using System.ComponentModel;
 using System.Net;
 
-namespace Com.Dongbat.Jbump
+namespace csBump
 {
 	/// <summary>
 	///  * @author tao
