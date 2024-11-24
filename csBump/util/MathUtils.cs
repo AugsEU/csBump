@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace csBump.util
@@ -49,15 +50,20 @@ namespace csBump.util
 		/// </summary>
 		public static readonly float degreesToRadians = PI / 180;
 		public static readonly float degRad = degreesToRadians;
-		private class Sin
+		private class SinTable
 		{
-			static readonly float[] table = new float[SIN_COUNT];
-			static Sin()
+			public static readonly float[] table = new float[SIN_COUNT];
+			static SinTable()
 			{
 				for (int i = 0; i < SIN_COUNT; i++)
+				{
 					table[i] = (float)Math.Sin((i + 0.5F) / SIN_COUNT * radFull);
+				}
+
 				for (int i = 0; i < 360; i += 90)
+				{
 					table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.Sin(i * degreesToRadians);
+				}
 			}
 		}
 
@@ -66,7 +72,7 @@ namespace csBump.util
 		/// </summary>
 		public static float Sin(float radians)
 		{
-			return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
+			return SinTable.table[(int)(radians * radToIndex) & SIN_MASK];
 		}
 
 		/// <summary>
@@ -74,7 +80,7 @@ namespace csBump.util
 		/// </summary>
 		public static float Cos(float radians)
 		{
-			return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
+			return SinTable.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
 		}
 
 		/// <summary>
@@ -82,7 +88,7 @@ namespace csBump.util
 		/// </summary>
 		public static float SinDeg(float degrees)
 		{
-			return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
+			return SinTable.table[(int)(degrees * degToIndex) & SIN_MASK];
 		}
 
 		/// <summary>
@@ -90,7 +96,7 @@ namespace csBump.util
 		/// </summary>
 		public static float CosDeg(float degrees)
 		{
-			return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
+			return SinTable.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 		}
 
 		// ---
@@ -125,7 +131,7 @@ namespace csBump.util
 		/// </summary>
 		public static int Random(int range)
 		{
-			return random.NextInt(range + 1);
+			return random.Next(range + 1);
 		}
 
 		/// <summary>
@@ -133,7 +139,7 @@ namespace csBump.util
 		/// </summary>
 		public static int Random(int start, int end)
 		{
-			return start + random.NextInt(end - start + 1);
+			return start + random.Next(end - start + 1);
 		}
 
 		/// <summary>
@@ -157,7 +163,7 @@ namespace csBump.util
 		/// </summary>
 		public static bool RandomBoolean()
 		{
-			return random.NextBoolean();
+			return random.Next() % 2 == 0;
 		}
 
 		/// <summary>
@@ -173,7 +179,7 @@ namespace csBump.util
 		/// </summary>
 		public static float Random()
 		{
-			return random.NextFloat();
+			return (float)random.NextDouble();
 		}
 
 		/// <summary>
@@ -181,7 +187,7 @@ namespace csBump.util
 		/// </summary>
 		public static float Random(float range)
 		{
-			return random.NextFloat() * range;
+			return Random() * range;
 		}
 
 		/// <summary>
@@ -189,7 +195,7 @@ namespace csBump.util
 		/// </summary>
 		public static float Random(float start, float end)
 		{
-			return start + random.NextFloat() * (end - start);
+			return start + Random() * (end - start);
 		}
 
 		/// <summary>
@@ -197,17 +203,17 @@ namespace csBump.util
 		/// </summary>
 		public static int RandomSign()
 		{
-			return 1 | (random.NextInt() >> 31);
+			return 1 | (random.Next() >> 31);
 		}
 
 		public static float RandomTriangular()
 		{
-			return random.NextFloat() - random.NextFloat();
+			return Random() - Random();
 		}
 
 		public static float RandomTriangular(float max)
 		{
-			return (random.NextFloat() - random.NextFloat()) * max;
+			return (Random() - Random()) * max;
 		}
 
 		public static float RandomTriangular(float min, float max)
@@ -217,7 +223,7 @@ namespace csBump.util
 
 		public static float RandomTriangular(float min, float max, float mode)
 		{
-			float u = random.NextFloat();
+			float u = Random();
 			float d = max - min;
 			if (u <= (mode - min) / d)
 				return min + (float)Math.Sqrt(u * d * (mode - min));
@@ -230,7 +236,19 @@ namespace csBump.util
 		/// </summary>
 		public static int NextPowerOfTwo(int value)
 		{
-			return 1 << -Integer.NumberOfLeadingZeros(Math.Max(2, value) - 1);
+			if (value <= 0)
+				throw new ArgumentException("Value must be positive.", nameof(value));
+
+			uint uValue = (uint)value;
+
+			// If the value is already a power of two, return it
+			if ((uValue & (uValue - 1)) == 0)
+			{
+				return value;
+			}
+
+			// Use bit manipulation to find the next power of two
+			return 1 << (32 - BitOperations.LeadingZeroCount(Math.Max(uValue, 2)));
 		}
 
 		public static bool IsPowerOfTwo(int value)
