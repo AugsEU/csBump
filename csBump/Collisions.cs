@@ -26,53 +26,54 @@ namespace csBump
 	/// <summary>
 	///  * @author tao
 	/// </summary>
-	public class Collisions : Comparator<int>
+	public class Collisions : IComparer<int>
 	{
-		private readonly BooleanArray overlaps = new BooleanArray();
-		private readonly FloatArray tis = new FloatArray();
-		private readonly FloatArray moveXs = new FloatArray();
-		private readonly FloatArray moveYs = new FloatArray();
-		private readonly IntArray normalXs = new IntArray();
-		private readonly IntArray normalYs = new IntArray();
-		private readonly FloatArray touchXs = new FloatArray();
-		private readonly FloatArray touchYs = new FloatArray();
-		private readonly FloatArray x1s = new FloatArray();
-		private readonly FloatArray y1s = new FloatArray();
-		private readonly FloatArray w1s = new FloatArray();
-		private readonly FloatArray h1s = new FloatArray();
-		private readonly FloatArray x2s = new FloatArray();
-		private readonly FloatArray y2s = new FloatArray();
-		private readonly FloatArray w2s = new FloatArray();
-		private readonly FloatArray h2s = new FloatArray();
+		private readonly List<bool> overlaps = new List<bool>();
+		private readonly List<float> tis = new List<float>();
+		private readonly List<float> moveXs = new List<float>();
+		private readonly List<float> moveYs = new List<float>();
+		private readonly List<int> normalXs = new List<int>();
+		private readonly List<int> normalYs = new List<int>();
+		private readonly List<float> touchXs = new List<float>();
+		private readonly List<float> touchYs = new List<float>();
+		private readonly List<float> x1s = new List<float>();
+		private readonly List<float> y1s = new List<float>();
+		private readonly List<float> w1s = new List<float>();
+		private readonly List<float> h1s = new List<float>();
+		private readonly List<float> x2s = new List<float>();
+		private readonly List<float> y2s = new List<float>();
+		private readonly List<float> w2s = new List<float>();
+		private readonly List<float> h2s = new List<float>();
 		public List<Item> items = new List<Item>();
 		public List<Item> others = new List<Item>();
 		public List<Response> types = new List<Response>();
 		private int size = 0;
+
 		public Collisions()
 		{
 		}
 
 		public Collisions(Collisions other)
 		{
-			overlaps.AddAll(other.overlaps);
-			tis.AddAll(other.tis);
-			moveXs.AddAll(other.moveXs);
-			moveYs.AddAll(other.moveYs);
-			normalXs.AddAll(other.normalXs);
-			normalYs.AddAll(other.normalYs);
-			touchXs.AddAll(other.touchXs);
-			touchYs.AddAll(other.touchYs);
-			x1s.AddAll(other.x1s);
-			y1s.AddAll(other.y1s);
-			w1s.AddAll(other.w1s);
-			h1s.AddAll(other.h1s);
-			x2s.AddAll(other.x2s);
-			y2s.AddAll(other.y2s);
-			w2s.AddAll(other.w2s);
-			h2s.AddAll(other.h2s);
-			items.AddAll(other.items);
-			others.AddAll(other.others);
-			types.AddAll(other.types);
+			overlaps = new List<bool>(other.overlaps);
+			tis = new List<float>(other.tis);
+			moveXs = new List<float>(other.moveXs);
+			moveYs = new List<float>(other.moveYs);
+			normalXs = new List<int>(other.normalXs);
+			normalYs = new List<int>(other.normalYs);
+			touchXs = new List<float>(other.touchXs);
+			touchYs = new List<float>(other.touchYs);
+			x1s = new List<float>(other.x1s);
+			y1s = new List<float>(other.y1s);
+			w1s = new List<float>(other.w1s);
+			h1s = new List<float>(other.h1s);
+			x2s = new List<float>(other.x2s);
+			y2s = new List<float>(other.y2s);
+			w2s = new List<float>(other.w2s);
+			h2s = new List<float>(other.h2s);
+			items = new List<Item>(other.items);
+			others = new List<Item>(other.others);
+			types = new List<Response>(other.types);
 			size = other.size;
 		}
 
@@ -125,25 +126,25 @@ namespace csBump
 			if (index < size)
 			{
 				size--;
-				overlaps.RemoveIndex(index);
-				tis.RemoveIndex(index);
-				moveXs.RemoveIndex(index);
-				moveYs.RemoveIndex(index);
-				normalXs.RemoveIndex(index);
-				normalYs.RemoveIndex(index);
-				touchXs.RemoveIndex(index);
-				touchYs.RemoveIndex(index);
-				x1s.RemoveIndex(index);
-				y1s.RemoveIndex(index);
-				w1s.RemoveIndex(index);
-				h1s.RemoveIndex(index);
-				x2s.RemoveIndex(index);
-				y2s.RemoveIndex(index);
-				w2s.RemoveIndex(index);
-				h2s.RemoveIndex(index);
-				items.Remove(index);
-				others.Remove(index);
-				types.Remove(index);
+				overlaps.RemoveAt(index);
+				tis.RemoveAt(index);
+				moveXs.RemoveAt(index);
+				moveYs.RemoveAt(index);
+				normalXs.RemoveAt(index);
+				normalYs.RemoveAt(index);
+				touchXs.RemoveAt(index);
+				touchYs.RemoveAt(index);
+				x1s.RemoveAt(index);
+				y1s.RemoveAt(index);
+				w1s.RemoveAt(index);
+				h1s.RemoveAt(index);
+				x2s.RemoveAt(index);
+				y2s.RemoveAt(index);
+				w2s.RemoveAt(index);
+				h2s.RemoveAt(index);
+				items.RemoveAt(index);
+				others.RemoveAt(index);
+				types.RemoveAt(index);
 			}
 		}
 
@@ -182,8 +183,8 @@ namespace csBump
 		}
 
 		private readonly List<int> order = new List<int>();
-		private readonly IntIntMap swapMap = new IntIntMap();
-		public virtual void KeySort(IList<int> indices, IList<TWildcardTodo> list)
+		private readonly Dictionary<int, int> swapMap = new Dictionary<int, int>();
+		public virtual void KeySort<T>(IList<int> indices, IList<T> list)
 		{
 			swapMap.Clear();
 			for (int i = 0; i < indices.Count; i++)
@@ -191,75 +192,23 @@ namespace csBump
 				int k = indices[i];
 				while (swapMap.ContainsKey(k))
 				{
-					k = swapMap.Get(k, 0);
+					int findKey;
+					if(swapMap.TryGetValue(k, out findKey))
+					{
+						k = findKey;
+					}
+					else
+					{
+						k = 0;
+					}
 				}
 
-				swapMap.Put(i, k);
+				swapMap.Add(i, k);
 			}
 
-			foreach (IntIntMap.Entry e in swapMap)
+			foreach (KeyValuePair<int, int> e in swapMap)
 			{
-				Collections.Swap(list, e.key, e.value);
-			}
-		}
-
-		public virtual void KeySort(IList<int> indices, FloatArray list)
-		{
-			swapMap.Clear();
-			for (int i = 0; i < indices.Count; i++)
-			{
-				int k = indices[i];
-				while (swapMap.ContainsKey(k))
-				{
-					k = swapMap.Get(k, 0);
-				}
-
-				swapMap.Put(i, k);
-			}
-
-			foreach (IntIntMap.Entry e in swapMap)
-			{
-				list.Swap(e.key, e.value);
-			}
-		}
-
-		public virtual void KeySort(IList<int> indices, IntArray list)
-		{
-			swapMap.Clear();
-			for (int i = 0; i < indices.Count; i++)
-			{
-				int k = indices[i];
-				while (swapMap.ContainsKey(k))
-				{
-					k = swapMap.Get(k, 0);
-				}
-
-				swapMap.Put(i, k);
-			}
-
-			foreach (IntIntMap.Entry e in swapMap)
-			{
-				list.Swap(e.key, e.value);
-			}
-		}
-
-		public virtual void KeySort(IList<int> indices, BooleanArray list)
-		{
-			swapMap.Clear();
-			for (int i = 0; i < indices.Count; i++)
-			{
-				int k = indices[i];
-				while (swapMap.ContainsKey(k))
-				{
-					k = swapMap.Get(k, 0);
-				}
-
-				swapMap.Put(i, k);
-			}
-
-			foreach (IntIntMap.Entry e in swapMap)
-			{
-				list.Swap(e.key, e.value);
+				Extra.Swap(list, e.Key, e.Value);
 			}
 		}
 
@@ -271,7 +220,7 @@ namespace csBump
 				order.Add(i);
 			}
 
-			Collections.Sort(order, this);
+			order.Sort(this);
 			KeySort(order, overlaps);
 			KeySort(order, tis);
 			KeySort(order, moveXs);
@@ -293,16 +242,16 @@ namespace csBump
 			KeySort(order, types);
 		}
 
-		public virtual int Compare(int a, int b)
+		public int Compare(int a, int b)
 		{
 			if (tis[a] == (tis[b]))
 			{
-				float ad = Rect_getSquareDistance(x1s[a], y1s[a], w1s[a], h1s[a], x2s[a], y2s[a], w2s[a], h2s[a]);
-				float bd = Rect_getSquareDistance(x1s[a], y1s[a], w1s[a], h1s[a], x2s[b], y2s[b], w2s[b], h2s[b]);
-				return Float.Compare(ad, bd);
+				float ad = Rect.Rect_getSquareDistance(x1s[a], y1s[a], w1s[a], h1s[a], x2s[a], y2s[a], w2s[a], h2s[a]);
+				float bd = Rect.Rect_getSquareDistance(x1s[a], y1s[a], w1s[a], h1s[a], x2s[b], y2s[b], w2s[b], h2s[b]);
+				return ad.CompareTo(bd);
 			}
 
-			return Float.Compare(tis[a], tis[b]);
+			return tis[a].CompareTo(tis[b]);
 		}
 	}
 }
