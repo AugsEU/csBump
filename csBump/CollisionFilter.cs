@@ -29,7 +29,7 @@ namespace csBump
 		public Response Filter(Item item, Item other);
 	}
 
-	public class DefaultFilder : CollisionFilter
+	public class DefaultFilter : CollisionFilter
 	{
 		public Response Filter(Item item, Item other)
 		{

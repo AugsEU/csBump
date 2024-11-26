@@ -57,7 +57,7 @@ namespace csBump
 		/// <summary>
 		/// This is a generalized implementation of the Liang-Barsky algorithm, which also returns
 		/// the normals of the sides where the segment intersects.
-		/// Notice that normals are only guaranteed to be accurate when initially ti1 == -Float.MAX_VALUE, ti2 == Float.MAX_VALUE
+		/// Notice that normals are only guaranteed to be accurate when initially ti1 == float.MinValue, ti2 == float.MaxValue
 		/// </summary>
 		/// <returns>false if the segment never touches the rect</returns>
 		public static bool Rect_getSegmentIntersectionIndices(float x, float y, float w, float h, float x1, float y1, float x2, float y2, float ti1, float ti2, Point ti, IntPoint n1, IntPoint n2)
