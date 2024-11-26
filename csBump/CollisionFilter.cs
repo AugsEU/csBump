@@ -26,7 +26,14 @@ namespace csBump
 	/// </summary>
 	public interface CollisionFilter
 	{
-		Response Filter(Item item, Item other);
-		CollisionFilter defaultFilter = new AnonymousCollisionFilter(this);
+		public Response Filter(Item item, Item other);
+	}
+
+	public class DefaultFilder : CollisionFilter
+	{
+		public Response Filter(Item item, Item other)
+		{
+			return new SlideResponse();
+		}
 	}
 }

@@ -36,43 +36,43 @@ namespace csBump
 		private readonly Collision rect_detectCollision_getSegmentIntersectionIndices_col = new Collision();
 
 
-		public virtual Collision Rect_detectCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, float goalX, float goalY)
+		public virtual Collision? Rect_detectCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, float goalX, float goalY)
 		{
 			Collision col = rect_detectCollision_getSegmentIntersectionIndices_col;
 			float dx = goalX - x1;
 			float dy = goalY - y1;
-			Rect_getDiff(x1, y1, w1, h1, x2, y2, w2, h2, rect_detectCollision_diff);
+			Rect.Rect_getDiff(x1, y1, w1, h1, x2, y2, w2, h2, rect_detectCollision_diff);
 			float x = rect_detectCollision_diff.x;
 			float y = rect_detectCollision_diff.y;
 			float w = rect_detectCollision_diff.w;
 			float h = rect_detectCollision_diff.h;
 			bool overlaps = false;
-			float ti = null;
+			float? ti = null;
 			int nx = 0, ny = 0;
-			if (Rect_containsPoint(x, y, w, h, 0, 0))
+			if (Rect.Rect_containsPoint(x, y, w, h, 0, 0))
 			{
 
 				//item was intersecting other
-				Rect_getNearestCorner(x, y, w, h, 0, 0, rect_detectCollision_nearestCorner);
+				Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, rect_detectCollision_nearestCorner);
 				float px = rect_detectCollision_nearestCorner.x;
 				float py = rect_detectCollision_nearestCorner.y;
 
 				//area of intersection
-				float wi = Min(w1, Abs(px));
-				float hi = Min(h1, Abs(py));
+				float wi = MathF.Min(w1, MathF.Abs(px));
+				float hi = MathF.Min(h1, MathF.Abs(py));
 				ti = -wi * hi; //ti is the negative area of intersection
 				overlaps = true;
 			}
 			else
 			{
-				bool intersect = Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -Float.MAX_VALUE, Float.MAX_VALUE, rect_detectCollision_getSegmentIntersectionIndices_ti, rect_detectCollision_getSegmentIntersectionIndices_n1, rect_detectCollision_getSegmentIntersectionIndices_n2);
+				bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, float.MinValue, float.MaxValue, rect_detectCollision_getSegmentIntersectionIndices_ti, rect_detectCollision_getSegmentIntersectionIndices_n1, rect_detectCollision_getSegmentIntersectionIndices_n2);
 				float ti1 = rect_detectCollision_getSegmentIntersectionIndices_ti.x;
 				float ti2 = rect_detectCollision_getSegmentIntersectionIndices_ti.y;
 				int nx1 = rect_detectCollision_getSegmentIntersectionIndices_n1.x;
 				int ny1 = rect_detectCollision_getSegmentIntersectionIndices_n1.y;
 
 				//item tunnels into other
-				if (intersect && ti1 < 1 && Abs(ti1 - ti2) >= DELTA && (0 < ti1 + DELTA || 0 == ti1 && ti2 > 0))
+				if (intersect && ti1 < 1 && MathF.Abs(ti1 - ti2) >= Extra.DELTA && (0 < ti1 + Extra.DELTA || 0 == ti1 && ti2 > 0))
 				{
 					ti = ti1;
 					nx = nx1;
@@ -81,7 +81,7 @@ namespace csBump
 				}
 			}
 
-			if (ti == null)
+			if (!ti.HasValue)
 			{
 				return null;
 			}
@@ -91,12 +91,11 @@ namespace csBump
 			{
 				if (dx == 0 && dy == 0)
 				{
-
 					//intersecting and not moving - use minimum displacement vector
-					Rect_getNearestCorner(x, y, w, h, 0, 0, rect_detectCollision_nearestCorner);
+					Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, rect_detectCollision_nearestCorner);
 					float px = rect_detectCollision_nearestCorner.x;
 					float py = rect_detectCollision_nearestCorner.y;
-					if (Abs(px) < Abs(py))
+					if (MathF.Abs(px) < MathF.Abs(py))
 					{
 						py = 0;
 					}
@@ -105,8 +104,8 @@ namespace csBump
 						px = 0;
 					}
 
-					nx = Sign(px);
-					ny = Sign(py);
+					nx = MathF.Sign(px);
+					ny = MathF.Sign(py);
 					tx = x1 + px;
 					ty = y1 + py;
 				}
@@ -114,7 +113,7 @@ namespace csBump
 				{
 
 					//intersecting and moving - move in the opposite direction
-					bool intersect = Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -Float.MAX_VALUE, 1, rect_detectCollision_getSegmentIntersectionIndices_ti, rect_detectCollision_getSegmentIntersectionIndices_n1, rect_detectCollision_getSegmentIntersectionIndices_n2);
+					bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -float.MaxValue, 1, rect_detectCollision_getSegmentIntersectionIndices_ti, rect_detectCollision_getSegmentIntersectionIndices_n1, rect_detectCollision_getSegmentIntersectionIndices_n2);
 					float ti1 = rect_detectCollision_getSegmentIntersectionIndices_ti.x;
 					nx = rect_detectCollision_getSegmentIntersectionIndices_n1.x;
 					ny = rect_detectCollision_getSegmentIntersectionIndices_n1.y;
@@ -129,13 +128,12 @@ namespace csBump
 			}
 			else
 			{
-
 				//tunnel
-				tx = x1 + dx * ti;
-				ty = y1 + dy * ti;
+				tx = x1 + dx * ti.Value;
+				ty = y1 + dy * ti.Value;
 			}
 
-			col.Set(overlaps, ti, dx, dy, nx, ny, tx, ty, x1, y1, w1, h1, x2, y2, w2, h2);
+			col.Set(overlaps, ti.Value, dx, dy, nx, ny, tx, ty, x1, y1, w1, h1, x2, y2, w2, h2);
 			return col;
 		}
 	}
