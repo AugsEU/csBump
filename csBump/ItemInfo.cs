@@ -1,5 +1,4 @@
 ﻿using csBump;
-using Java.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +10,7 @@ namespace csBump
 	public class ItemInfo
 	{
 		public Item item;
+
 		/// <summary>
 		/// The x coordinate where the line segment intersects the {@link Rect} of the {@link Item}.
 		/// </summary>
@@ -30,6 +30,7 @@ namespace csBump
 		/// </summary>
 		public float ti2;
 		public float weight;
+
 		public ItemInfo(Item item, float ti1, float ti2, float weight)
 		{
 			this.item = item;
@@ -38,18 +39,27 @@ namespace csBump
 			this.weight = weight;
 		}
 
-		public static readonly Comparator<ItemInfo> weightComparator = new AnonymousComparator(this);
-		private sealed class AnonymousComparator : Comparator
+		public static readonly IComparer<ItemInfo> weightComparator = new AnonymousComparator();
+
+		private sealed class AnonymousComparator : IComparer<ItemInfo>
 		{
-			public AnonymousComparator(ItemInfo parent)
+			public AnonymousComparator()
 			{
-				this.parent = parent;
 			}
 
-			private readonly ItemInfo parent;
-			public int Compare(ItemInfo o1, ItemInfo o2)
+			public int Compare(ItemInfo? o1, ItemInfo? o2)
 			{
-				return Float.Compare(o1.weight, o2.weight);
+				if (o1 == null || o2 == null)
+				{
+					throw new NullReferenceException();
+				}
+
+				if (o1.weight == o2.weight)
+				{
+					return 0;
+				}
+
+				return o1.weight.CompareTo(o2.weight);
 			}
 		}
 	}

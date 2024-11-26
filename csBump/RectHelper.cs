@@ -34,6 +34,8 @@ namespace csBump
 		private readonly IntPoint rect_detectCollision_getSegmentIntersectionIndices_n1 = new IntPoint();
 		private readonly IntPoint rect_detectCollision_getSegmentIntersectionIndices_n2 = new IntPoint();
 		private readonly Collision rect_detectCollision_getSegmentIntersectionIndices_col = new Collision();
+
+
 		public virtual Collision Rect_detectCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, float goalX, float goalY)
 		{
 			Collision col = rect_detectCollision_getSegmentIntersectionIndices_col;

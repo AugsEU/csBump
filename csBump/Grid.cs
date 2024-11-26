@@ -26,12 +26,12 @@ namespace csBump
 	{
 		public static void Grid_toWorld(float cellSize, float cx, float cy, Point point)
 		{
-			point[(cx - 1) * cellSize] = (cy - 1) * cellSize;
+			point.Set((cx - 1) * cellSize,(cy - 1) * cellSize);
 		}
 
 		public static void Grid_toCell(float cellSize, float x, float y, Point point)
 		{
-			point[(float)Floor(x / cellSize) + 1] = (float)Floor(y / cellSize) + 1;
+			point.Set(MathF.Floor(x / cellSize) + 1, MathF.Floor(y / cellSize) + 1);
 		}
 
 		public static int Grid_traverse_initStep(float cellSize, float ct, float t1, float t2, Point point)
@@ -39,17 +39,17 @@ namespace csBump
 			float v = t2 - t1;
 			if (v > 0)
 			{
-				point[cellSize / v] = ((ct + v) * cellSize - t1) / v;
+				point.Set(cellSize / v, ((ct + v) * cellSize - t1) / v);
 				return 1;
 			}
 			else if (v < 0)
 			{
-				point[-cellSize / v] = ((ct + v - 1) * cellSize - t1) / v;
+				point.Set(-cellSize / v, ((ct + v - 1) * cellSize - t1) / v);
 				return -1;
 			}
 			else
 			{
-				point[Float.MAX_VALUE] = Float.MAX_VALUE;
+				point.Set(float.MaxValue, float.MaxValue);
 				return 0;
 			}
 		}
@@ -83,7 +83,7 @@ namespace csBump
     approaching the last cell in some occasions. We finish iterating
     when we are *next* to the last cell*/
 			bool cont = true; //stop iterating if TraverseCallback reports that cell coordinates are outside of the world.
-			while (Abs(cx - cx2) + Abs(cy - cy2) > 1 && cont)
+			while (Math.Abs(cx - cx2) + Math.Abs(cy - cy2) > 1 && cont)
 			{
 				if (tx < ty)
 				{
@@ -158,8 +158,8 @@ namespace csBump
 			Grid_toCell(cellSize, x, y, grid_toCellRect_cxy);
 			float cx = grid_toCellRect_cxy.x;
 			float cy = grid_toCellRect_cxy.y;
-			float cr = (float)Ceil((x + w) / cellSize);
-			float cb = (float)Ceil((y + h) / cellSize);
+			float cr = MathF.Ceiling((x + w) / cellSize);
+			float cb = MathF.Ceiling((y + h) / cellSize);
 			rect.Set(cx, cy, cr - cx + 1, cb - cy + 1);
 			return rect;
 		}

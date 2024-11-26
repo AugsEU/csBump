@@ -17,31 +17,25 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace csBump
 {
-	public class Item<E>
+	public class Item
 	{
-		public E userData;
 		protected readonly int identityHash;
 		public Item()
 		{
-			identityHash = System.IdentityHashCode(this);
+			identityHash = RuntimeHelpers.GetHashCode(this);
 		}
 
-		public Item(E userData)
+		public override bool Equals(object? o)
 		{
-			identityHash = System.IdentityHashCode(this);
-			this.userData = userData;
+			return ReferenceEquals(this, o);
 		}
 
-		public virtual bool Equals(object o)
-		{
-			return (this == o);
-		}
-
-		public virtual int GetHashCode()
+		public override int GetHashCode()
 		{
 			return identityHash;
 		}

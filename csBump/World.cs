@@ -29,7 +29,7 @@ namespace csBump
 	/// <summary>
 	///  * @author tao
 	/// </summary>
-	public class World<E>
+	public class World
 	{
 		private readonly HashMap<Point, Cell> cellMap = new HashMap<Point, Cell>();
 		private readonly HashSet<Cell> nonEmptyCells = new HashSet<Cell>();
@@ -57,7 +57,7 @@ namespace csBump
 			return tileMode;
 		}
 
-		private void AddItemToCell(Item<E> item, float cx, float cy)
+		private void AddItemToCell(Item item, float cx, float cy)
 		{
 			Point pt = new Point(cx, cy);
 			Cell cell = cellMap[pt];
@@ -538,7 +538,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Item<E> Add(Item<E> item, float x, float y, float w, float h)
+		public virtual Item Add(Item item, float x, float y, float w, float h)
 		{
 			if (rects.ContainsKey(item))
 			{

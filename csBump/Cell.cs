@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace csBump
@@ -33,18 +34,37 @@ namespace csBump
 		/// This class is compared by identity, like {@link Item}, and it also caches its identityHashCode() result.
 		/// </summary>
 		protected readonly int identityHash;
-		public ObjectSet<Item> items = new ObjectSet<Item>(11);
+		public HashSet<Item> items = new HashSet<Item>(11);
 		public Cell()
 		{
-			identityHash = System.IdentityHashCode(this);
+			identityHash = RuntimeHelpers.GetHashCode(this);
+			x = 0;
+			y = 0;
 		}
 
-		public virtual bool Equals(object o)
+		public override bool Equals(object? o)
 		{
-			return (this == o);
+			if(ReferenceEquals(this, o))
+			{
+				return true;
+			}
+
+			if(o is null)
+			{
+				return false;
+			}
+
+			if(o is not Cell)
+			{
+				return false;
+			}
+
+			Cell otherCell = (Cell)o;
+
+			return x == otherCell.x && y == otherCell.y;
 		}
 
-		public virtual int GetHashCode()
+		public override int GetHashCode()
 		{
 			return identityHash;
 		}

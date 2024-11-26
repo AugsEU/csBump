@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using static csBump.Response;
 
 namespace csBump
 {
@@ -39,10 +40,90 @@ namespace csBump
 				this.goalY = goalY;
 			}
 		}
+	}
 
-		Response slide = new AnonymousResponse(this);
-		Response touch = new AnonymousResponse1(this);
-		Response cross = new AnonymousResponse2(this);
-		Response bounce = new AnonymousResponse3(this);
+	public class SlideResponse : Response
+	{
+		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		{
+			Point tch = collision.touch;
+			Point move = collision.move;
+			float sx = tch.x, sy = tch.y;
+			if (move.x != 0 || move.y != 0)
+			{
+				if (collision.normal.x == 0)
+				{
+					sx = goalX;
+				}
+				else
+				{
+					sy = goalY;
+				}
+			}
+
+			x = tch.x;
+			y = tch.y;
+			goalX = sx;
+			goalY = sy;
+			result.projectedCollisions.Clear();
+			world.Project(collision.item, x, y, w, h, goalX, goalY, filter, result.projectedCollisions);
+			result.Set(goalX, goalY);
+			return result;
+		}
+	}
+
+	public class TouchResponse : Response
+	{
+		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		{
+			result.projectedCollisions.Clear();
+			result.Set(collision.touch.x, collision.touch.y);
+			return result;
+		}
+	}
+
+	public class CrossResponse : Response
+	{
+		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		{
+			result.projectedCollisions.Clear();
+			world.Project(collision.item, x, y, w, h, goalX, goalY, filter, result.projectedCollisions);
+			result.Set(goalX, goalY);
+			return result;
+		}
+	}
+
+	public class BounceResponse : Response
+	{
+		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		{
+			Point tch = collision.touch;
+			Point move = collision.move;
+			float bx = tch.x, by = tch.y;
+			if (move.x != 0 || move.y != 0)
+			{
+				float bnx = goalX - tch.x;
+				float bny = goalY - tch.y;
+				if (collision.normal.x == 0)
+				{
+					bny = -bny;
+				}
+				else
+				{
+					bnx = -bnx;
+				}
+				bx = tch.x + bnx;
+				by = tch.y + bny;
+			}
+
+			x = tch.x;
+			y = tch.y;
+			goalX = bx;
+			goalY = by;
+			result.projectedCollisions.Clear();
+			world.Project(collision.item, x, y, w, h, goalX, goalY, filter, result.projectedCollisions);
+			result.Set(goalX, goalY);
+			return result;
+		}
 	}
 }

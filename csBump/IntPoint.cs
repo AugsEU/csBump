@@ -30,7 +30,7 @@ namespace csBump
 			this.y = y;
 		}
 
-		public virtual void Set(int x, int y)
+		public void Set(int x, int y)
 		{
 			this.x = x;
 			this.y = y;
