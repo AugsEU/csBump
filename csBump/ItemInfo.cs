@@ -1,42 +1,35 @@
-﻿using csBump;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-
-namespace csBump
+﻿namespace csBump
 {
 	public class ItemInfo
 	{
-		public Item item;
+		public Item mItem;
 
 		/// <summary>
 		/// The x coordinate where the line segment intersects the {@link Rect} of the {@link Item}.
 		/// </summary>
-		public float x1;
+		public float mX1;
 		/// <summary>
 		/// The y coordinate where the line segment intersects the {@link Rect} of the {@link Item}.
 		/// </summary>
-		public float y1;
-		public float x2;
-		public float y2;
+		public float mY1;
+		public float mX2;
+		public float mY2;
 		/// <summary>
 		/// A value from 0 to 1 indicating how far from the starting point of the segment did the impact happen horizontally.
 		/// </summary>
-		public float ti1;
+		public float mTI1;
 		/// <summary>
 		/// A value from 0 to 1 indicating how far from the starting point of the segment did the impact happen vertically.
 		/// </summary>
-		public float ti2;
-		public float weight;
+		public float mTI2;
+		public float mWeight;
 
 		public ItemInfo(Item item, float ti1, float ti2, float weight)
 		{
-			this.item = item;
-			this.ti1 = ti1;
-			this.ti2 = ti2;
-			this.weight = weight;
+			mItem = item;
+			mTI1 = ti1;
+			mTI2 = ti2;
+			mWeight = weight;
 		}
 
 		public static readonly IComparer<ItemInfo> weightComparator = new AnonymousComparator();
@@ -54,12 +47,12 @@ namespace csBump
 					throw new NullReferenceException();
 				}
 
-				if (o1.weight == o2.weight)
+				if (o1.mWeight == o2.mWeight)
 				{
 					return 0;
 				}
 
-				return o1.weight.CompareTo(o2.weight);
+				return o1.mWeight.CompareTo(o2.mWeight);
 			}
 		}
 	}

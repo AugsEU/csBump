@@ -7,19 +7,19 @@ namespace csBump.util
 	public class LinkedHashSet<T> : ISet<T> where T : notnull
 	{
 
-		private readonly IDictionary<T, LinkedListNode<T>> dict;
-		private readonly LinkedList<T> list;
+		private readonly IDictionary<T, LinkedListNode<T>> mDict;
+		private readonly LinkedList<T> mList;
 
 		public LinkedHashSet(int initialCapacity)
 		{
-			this.dict = new Dictionary<T, LinkedListNode<T>>(initialCapacity);
-			this.list = new LinkedList<T>();
+			this.mDict = new Dictionary<T, LinkedListNode<T>>(initialCapacity);
+			this.mList = new LinkedList<T>();
 		}
 
 		public LinkedHashSet()
 		{
-			this.dict = new Dictionary<T, LinkedListNode<T>>();
-			this.list = new LinkedList<T>();
+			this.mDict = new Dictionary<T, LinkedListNode<T>>();
+			this.mList = new LinkedList<T>();
 		}
 
 		public LinkedHashSet(IEnumerable<T> e) : this()
@@ -46,12 +46,12 @@ namespace csBump.util
 
 		public bool Add(T item)
 		{
-			if (this.dict.ContainsKey(item))
+			if (this.mDict.ContainsKey(item))
 			{
 				return false;
 			}
-			LinkedListNode<T> node = this.list.AddLast(item);
-			this.dict[item] = node;
+			LinkedListNode<T> node = this.mList.AddLast(item);
+			this.mDict[item] = node;
 			return true;
 		}
 
@@ -238,7 +238,7 @@ namespace csBump.util
 		{
 			get
 			{
-				return this.dict.Count;
+				return this.mDict.Count;
 			}
 		}
 
@@ -246,7 +246,7 @@ namespace csBump.util
 		{
 			get
 			{
-				return this.dict.IsReadOnly;
+				return this.mDict.IsReadOnly;
 			}
 		}
 
@@ -257,29 +257,29 @@ namespace csBump.util
 
 		public void Clear()
 		{
-			this.dict.Clear();
-			this.list.Clear();
+			this.mDict.Clear();
+			this.mList.Clear();
 		}
 
 		public bool Contains(T item)
 		{
-			return this.dict.ContainsKey(item);
+			return this.mDict.ContainsKey(item);
 		}
 
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			this.list.CopyTo(array, arrayIndex);
+			this.mList.CopyTo(array, arrayIndex);
 		}
 
 		public bool Remove(T item)
 		{
 			LinkedListNode<T> node;
-			if (!this.dict.TryGetValue(item, out node))
+			if (!this.mDict.TryGetValue(item, out node))
 			{
 				return false;
 			}
-			this.dict.Remove(item);
-			this.list.Remove(node);
+			this.mDict.Remove(item);
+			this.mList.Remove(node);
 			return true;
 		}
 
@@ -289,7 +289,7 @@ namespace csBump.util
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return this.list.GetEnumerator();
+			return this.mList.GetEnumerator();
 		}
 
 		//
@@ -298,7 +298,7 @@ namespace csBump.util
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.list.GetEnumerator();
+			return this.mList.GetEnumerator();
 		}
 
 	}

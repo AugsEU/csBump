@@ -1,93 +1,84 @@
-﻿/*
- * Copyright 2017 tao.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-using System.Collections.ObjectModel;
-using csBump.util;
+﻿using csBump.util;
 
 namespace csBump
 {
 	/// <summary>
-	///  * @author tao
+	/// Represents the world in which collisions can take place.
 	/// </summary>
 	public class World
 	{
-		private readonly Dictionary<Point, Cell> cellMap = new Dictionary<Point, Cell>();
-		private readonly HashSet<Cell> nonEmptyCells = new HashSet<Cell>();
-		private float cellMinX, cellMinY, cellMaxX, cellMaxY;
-		private readonly Grid grid = new Grid();
-		private readonly RectHelper rectHelper = new RectHelper();
-		private bool tileMode = true;
-		private readonly float cellSize;
+		private readonly Dictionary<Point, Cell> mCellMap = new Dictionary<Point, Cell>();
+		private readonly HashSet<Cell> mNonEmptyCells = new HashSet<Cell>();
+		private float mCellMinX;
+		private float mCellMinY;
+		private float mCellMaxX;
+		private float mCellMaxY;
+
+		private readonly Grid mGrid = new Grid();
+
+		private readonly RectHelper mRectHelper = new RectHelper();
+
+		private bool mTileMode = true;
+		private readonly float mCellSize;
+
 		public World() : this(64F)
 		{
 		}
 
 		public World(float cellSize)
 		{
-			this.cellSize = cellSize;
+			this.mCellSize = cellSize;
 		}
 
 		public virtual void SetTileMode(bool tileMode)
 		{
-			this.tileMode = tileMode;
+			this.mTileMode = tileMode;
 		}
 
 		public virtual bool IsTileMode()
 		{
-			return tileMode;
+			return mTileMode;
 		}
 
 		private void AddItemToCell(Item item, float cx, float cy)
 		{
 			Point pt = new Point(cx, cy);
-			Cell cell = cellMap[pt];
+			Cell cell = mCellMap[pt];
 			if (cell == null)
 			{
 				cell = new Cell();
-				cellMap.Add(pt, cell);
-				if (cx < cellMinX)
-					cellMinX = cx;
-				if (cy < cellMinY)
-					cellMinY = cy;
-				if (cx > cellMaxX)
-					cellMaxX = cx;
-				if (cy > cellMaxY)
-					cellMaxY = cy;
+				mCellMap.Add(pt, cell);
+				if (cx < mCellMinX)
+					mCellMinX = cx;
+				if (cy < mCellMinY)
+					mCellMinY = cy;
+				if (cx > mCellMaxX)
+					mCellMaxX = cx;
+				if (cy > mCellMaxY)
+					mCellMaxY = cy;
 			}
 
-			nonEmptyCells.Add(cell);
-			cell.items.Add(item);
+			mNonEmptyCells.Add(cell);
+			cell.mItems.Add(item);
 		}
 
 		private bool RemoveItemFromCell(Item item, float cx, float cy)
 		{
 			Point pt = new Point(cx, cy);
-			Cell cell = cellMap[pt];
+			Cell cell = mCellMap[pt];
 			if (cell == null)
 			{
 				return false;
 			}
 
-			if (!cell.items.Remove(item))
+			if (!cell.mItems.Remove(item))
 			{
 				return false;
 			}
 
-			if (cell.items.Count == 0)
+			if (cell.mItems.Count == 0)
 			{
-				nonEmptyCells.Remove(cell);
+				mNonEmptyCells.Remove(cell);
 			}
 
 			return true;
@@ -97,23 +88,23 @@ namespace csBump
 		{
 			result.Clear();
 			Point pt = new Point(cl, ct);
-			for (float cy = ct; cy < ct + ch; cy++, pt.y++)
+			for (float cy = ct; cy < ct + ch; cy++, pt.mY++)
 			{
-				for (float cx = cl; cx < cl + cw; cx++, pt.x++)
+				for (float cx = cl; cx < cl + cw; cx++, pt.mX++)
 				{
-					Cell cell = cellMap[pt];
-					if (cell != null && !(cell.items.Count == 0))
+					Cell cell = mCellMap[pt];
+					if (cell != null && !(cell.mItems.Count == 0))
 					{
 
 						// this is conscious of tunneling
-						foreach(Item item in cell.items)
+						foreach(Item item in cell.mItems)
 						{
 							result.Add(item);
 						}
 					}
 				}
 
-				pt.x = cl;
+				pt.mX = cl;
 			}
 
 			return result;
@@ -130,7 +121,7 @@ namespace csBump
 			// use set
 			List<Cell> visited = getCellsTouchedBySegment_visited;
 			Point pt = new Point(x1, y1);
-			grid.Grid_traverse(cellSize, x1, y1, x2, y2, new AnonymousTraverseCallback(this, pt, visited, result));
+			mGrid.Grid_traverse(mCellSize, x1, y1, x2, y2, new AnonymousTraverseCallback(this, pt, visited, result));
 			return result;
 		}
 
@@ -153,11 +144,11 @@ namespace csBump
 			public bool OnTraverse(float cx, float cy, int stepX, int stepY)
 			{
 				//stop if cell coordinates are outside of the world.
-				if (stepX == -1 && cx < parent.cellMinX || stepX == 1 && cx > parent.cellMaxX || stepY == -1 && cy < parent.cellMinY || stepY == 1 && cy > parent.cellMaxY)
+				if (stepX == -1 && cx < parent.mCellMinX || stepX == 1 && cx > parent.mCellMaxX || stepY == -1 && cy < parent.mCellMinY || stepY == 1 && cy > parent.mCellMaxY)
 					return false;
-				pt.x = cx;
-				pt.y = cy;
-				Cell cell = parent.cellMap[pt];
+				pt.mX = cx;
+				pt.mY = cy;
+				Cell cell = parent.mCellMap[pt];
 				if (cell == null || visited.Contains(cell))
 				{
 					return true;
@@ -180,7 +171,7 @@ namespace csBump
 			// use set
 			List<Cell> visited = getCellsTouchedBySegment_visited;
 			Point pt = new Point(originX, originY);
-			grid.Grid_traverseRay(cellSize, originX, originY, dirX, dirY, new AnonymousTraverseCallback1(this, pt, visited, result));
+			mGrid.Grid_traverseRay(mCellSize, originX, originY, dirX, dirY, new AnonymousTraverseCallback1(this, pt, visited, result));
 			return result;
 		}
 
@@ -202,11 +193,11 @@ namespace csBump
 			public bool OnTraverse(float cx, float cy, int stepX, int stepY)
 			{
 				//stop if cell coordinates are outside of the world.
-				if (stepX == -1 && cx < parent.cellMinX || stepX == 1 && cx > parent.cellMaxX || stepY == -1 && cy < parent.cellMinY || stepY == 1 && cy > parent.cellMaxY)
+				if (stepX == -1 && cx < parent.mCellMinX || stepX == 1 && cx > parent.mCellMaxX || stepY == -1 && cy < parent.mCellMinY || stepY == 1 && cy > parent.mCellMaxY)
 					return false;
-				pt.x = cx;
-				pt.y = cy;
-				Cell cell = parent.cellMap[pt];
+				pt.mX = cx;
+				pt.mY = cy;
+				Cell cell = parent.mCellMap[pt];
 				if (cell == null || visited.Contains(cell))
 				{
 					return true;
@@ -260,7 +251,7 @@ namespace csBump
 			GetCellsTouchedBySegment(x1, y1, x2, y2, info_cells);
 			foreach (Cell cell in info_cells)
 			{
-				foreach (Item item in cell.items)
+				foreach (Item item in cell.mItems)
 				{
 					if (!info_visited.Contains(item))
 					{
@@ -268,19 +259,19 @@ namespace csBump
 						if (filter == null || filter.Filter(item, null) != null)
 						{
 							Rect rect = rects[item];
-							float l = rect.x;
-							float t = rect.y;
-							float w = rect.w;
-							float h = rect.h;
+							float l = rect.mX;
+							float t = rect.mY;
+							float w = rect.mWidth;
+							float h = rect.mHeight;
 							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, info_ti, info_normalX, info_normalY))
 							{
-								float ti1 = info_ti.x;
-								float ti2 = info_ti.y;
+								float ti1 = info_ti.mX;
+								float ti2 = info_ti.mY;
 								if ((0 < ti1 && ti1 < 1) || (0 < ti2 && ti2 < 1))
 								{
 									Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, float.MinValue, float.MaxValue, info_ti, info_normalX, info_normalY);
-									float tii0 = info_ti.x;
-									float tii1 = info_ti.y;
+									float tii0 = info_ti.mX;
+									float tii1 = info_ti.mY;
 									infos.Add(new ItemInfo(item, ti1, ti2, Math.Min(tii0, tii1)));
 								}
 							}
@@ -305,7 +296,7 @@ namespace csBump
 			GetCellsTouchedByRay(originX, originY, dirX, dirY, info_cells);
 			foreach (Cell cell in info_cells)
 			{
-				foreach (Item item in cell.items)
+				foreach (Item item in cell.mItems)
 				{
 					if (!info_visited.Contains(item))
 					{
@@ -313,14 +304,14 @@ namespace csBump
 						if (filter == null || filter.Filter(item, null) != null)
 						{
 							Rect rect = rects[item];
-							float l = rect.x;
-							float t = rect.y;
-							float w = rect.w;
-							float h = rect.h;
+							float l = rect.mX;
+							float t = rect.mY;
+							float w = rect.mWidth;
+							float h = rect.mHeight;
 							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, info_ti, info_normalX, info_normalY))
 							{
-								float ti1 = info_ti.x;
-								float ti2 = info_ti.y;
+								float ti1 = info_ti.mX;
+								float ti2 = info_ti.mY;
 								infos.Add(new ItemInfo(item, ti1, ti2, Math.Min(ti1, ti2)));
 							}
 						}
@@ -383,29 +374,29 @@ namespace csBump
 			float tb = MathF.Max(goalY + h, y + h);
 			float tw = tr - tl;
 			float th = tb - tt;
-			grid.Grid_toCellRect(cellSize, tl, tt, tw, th, project_c);
-			float cl = project_c.x, ct = project_c.y, cw = project_c.w, ch = project_c.h;
+			mGrid.Grid_toCellRect(mCellSize, tl, tt, tw, th, project_c);
+			float cl = project_c.mX, ct = project_c.mY, cw = project_c.mWidth, ch = project_c.mHeight;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
 			foreach (Item other in dictItemsInCellRect)
 			{
 				if (!visited.Contains(other))
 				{
 					visited.Add(other);
-					Response response = filter.Filter(item, other);
+					IResponse response = filter.Filter(item, other);
 					if (response != null)
 					{
 						Rect o = GetRect(other);
-						float ox = o.x, oy = o.y, ow = o.w, oh = o.h;
-						Collision col = rectHelper.Rect_detectCollision(x, y, w, h, ox, oy, ow, oh, goalX, goalY);
+						float ox = o.mX, oy = o.mY, ow = o.mWidth, oh = o.mHeight;
+						Collision col = mRectHelper.Rect_detectCollision(x, y, w, h, ox, oy, ow, oh, goalX, goalY);
 						if (col != null)
 						{
-							collisions.Add(col.overlaps, col.ti, col.move.x, col.move.y, col.normal.x, col.normal.y, col.touch.x, col.touch.y, col.itemRect.x, col.itemRect.y, col.itemRect.w, col.itemRect.h, col.otherRect.x, col.otherRect.y, col.otherRect.w, col.otherRect.h, item, other, response);
+							collisions.Add(col.mOverlaps, col.mTI, col.mMove.mX, col.mMove.mY, col.mNormal.mX, col.mNormal.mY, col.mTouch.mX, col.mTouch.mY, col.mItemRect.mX, col.mItemRect.mY, col.mItemRect.mWidth, col.mItemRect.mHeight, col.mOtherRect.mX, col.mOtherRect.mY, col.mOtherRect.mWidth, col.mOtherRect.mHeight, item, other, response);
 						}
 					}
 				}
 			}
 
-			if (tileMode)
+			if (mTileMode)
 			{
 				collisions.Sort();
 			}
@@ -466,7 +457,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Dictionary<Point, Cell>.ValueCollection GetCells()
 		{
-			return cellMap.Values;
+			return mCellMap.Values;
 		}
 
 		// this is conscious of tunneling
@@ -478,7 +469,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual int CountCells()
 		{
-			return cellMap.Count;
+			return mCellMap.Count;
 		}
 
 		// this is conscious of tunneling
@@ -514,7 +505,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Point ToWorld(float cx, float cy, Point result)
 		{
-			Grid.Grid_toWorld(cellSize, cx, cy, result);
+			Grid.Grid_toWorld(mCellSize, cx, cy, result);
 			return result;
 		}
 
@@ -527,7 +518,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Point ToCell(float x, float y, Point result)
 		{
-			Grid.Grid_toCell(cellSize, x, y, result);
+			Grid.Grid_toCell(mCellSize, x, y, result);
 			return result;
 		}
 
@@ -554,8 +545,8 @@ namespace csBump
 			}
 
 			rects.Add(item, new Rect(x, y, w, h));
-			grid.Grid_toCellRect(cellSize, x, y, w, h, add_c);
-			float cl = add_c.x, ct = add_c.y, cw = add_c.w, ch = add_c.h;
+			mGrid.Grid_toCellRect(mCellSize, x, y, w, h, add_c);
+			float cl = add_c.mX, ct = add_c.mY, cw = add_c.mWidth, ch = add_c.mHeight;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
 				for (float cx = cl; cx < cl + cw; cx++)
@@ -585,10 +576,10 @@ namespace csBump
 		public virtual void Remove(Item item)
 		{
 			Rect rect = GetRect(item);
-			float x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
 			rects.Remove(item);
-			grid.Grid_toCellRect(cellSize, x, y, w, h, remove_c);
-			float cl = remove_c.x, ct = remove_c.y, cw = remove_c.w, ch = remove_c.h;
+			mGrid.Grid_toCellRect(mCellSize, x, y, w, h, remove_c);
+			float cl = remove_c.mX, ct = remove_c.mY, cw = remove_c.mWidth, ch = remove_c.mHeight;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
 				for (float cx = cl; cx < cl + cw; cx++)
@@ -608,8 +599,8 @@ namespace csBump
 		public virtual void Reset()
 		{
 			rects.Clear();
-			cellMap.Clear();
-			nonEmptyCells.Clear();
+			mCellMap.Clear();
+			mNonEmptyCells.Clear();
 		}
 
 		// this is conscious of tunneling
@@ -622,7 +613,7 @@ namespace csBump
 		public virtual void Update(Item item, float x2, float y2)
 		{
 			Rect rect = GetRect(item);
-			float x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
 			Update(item, x2, y2, w, h);
 		}
 
@@ -652,13 +643,13 @@ namespace csBump
 		public virtual void Update(Item item, float x2, float y2, float w2, float h2)
 		{
 			Rect rect = GetRect(item);
-			float x1 = rect.x, y1 = rect.y, w1 = rect.w, h1 = rect.h;
+			float x1 = rect.mX, y1 = rect.mY, w1 = rect.mWidth, h1 = rect.mHeight;
 			if (x1 != x2 || y1 != y2 || w1 != w2 || h1 != h2)
 			{
-				Rect c1 = grid.Grid_toCellRect(cellSize, x1, y1, w1, h1, update_c1);
-				Rect c2 = grid.Grid_toCellRect(cellSize, x2, y2, w2, h2, update_c2);
-				float cl1 = c1.x, ct1 = c1.y, cw1 = c1.w, ch1 = c1.h;
-				float cl2 = c2.x, ct2 = c2.y, cw2 = c2.w, ch2 = c2.h;
+				Rect c1 = mGrid.Grid_toCellRect(mCellSize, x1, y1, w1, h1, update_c1);
+				Rect c2 = mGrid.Grid_toCellRect(mCellSize, x2, y2, w2, h2, update_c2);
+				float cl1 = c1.mX, ct1 = c1.mY, cw1 = c1.mWidth, ch1 = c1.mHeight;
+				float cl2 = c2.mX, ct2 = c2.mY, cw2 = c2.mWidth, ch2 = c2.mHeight;
 				if (cl1 != cl2 || ct1 != ct2 || cw1 != cw2 || ch1 != ch2)
 				{
 					float cr1 = cl1 + cw1 - 1, cb1 = ct1 + ch1 - 1;
@@ -724,7 +715,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Response.Result check_result = new Response.Result();
+		private readonly IResponse.Result check_result = new IResponse.Result();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -732,35 +723,35 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Response.Result Check(Item item, float goalX, float goalY, CollisionFilter filter)
+		public virtual IResponse.Result Check(Item item, float goalX, float goalY, CollisionFilter filter)
 		{
 			List<Item> visited = check_visited;
 			visited.Clear();
 			visited.Add(item);
 			CollisionFilter visitedFilter = new AnonymousCollisionFilter(this, visited, filter);
 			Rect rect = GetRect(item);
-			float x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
 			Collisions cols = check_cols;
 			cols.Clear();
 			Collisions projectedCols = Project(item, x, y, w, h, goalX, goalY, filter, check_projectedCols);
-			Response.Result result = check_result;
+			IResponse.Result result = check_result;
 			while (projectedCols != null && !projectedCols.IsEmpty())
 			{
 				Collision col = projectedCols.Get(0);
-				cols.Add(col.overlaps, col.ti, col.move.x, col.move.y, col.normal.x, col.normal.y, col.touch.x, col.touch.y, col.itemRect.x, col.itemRect.y, col.itemRect.w, col.itemRect.h, col.otherRect.x, col.otherRect.y, col.otherRect.w, col.otherRect.h, col.item, col.other, col.type);
-				visited.Add(col.other);
-				Response response = col.type;
+				cols.Add(col.mOverlaps, col.mTI, col.mMove.mX, col.mMove.mY, col.mNormal.mX, col.mNormal.mY, col.mTouch.mX, col.mTouch.mY, col.mItemRect.mX, col.mItemRect.mY, col.mItemRect.mWidth, col.mItemRect.mHeight, col.mOtherRect.mX, col.mOtherRect.mY, col.mOtherRect.mWidth, col.mOtherRect.mHeight, col.mItem, col.mOther, col.mType);
+				visited.Add(col.mOther);
+				IResponse response = col.mType;
 				response.Response(this, col, x, y, w, h, goalX, goalY, visitedFilter, result);
-				goalX = result.goalX;
-				goalY = result.goalY;
-				projectedCols = result.projectedCollisions;
+				goalX = result.mGoalX;
+				goalY = result.mGoalY;
+				projectedCols = result.mProjectedCollisions;
 			}
 
 			result.Set(goalX, goalY);
-			result.projectedCollisions.Clear();
+			result.mProjectedCollisions.Clear();
 			for (int i = 0; i < cols.Size(); i++)
 			{
-				result.projectedCollisions.Add(cols.Get(i));
+				result.mProjectedCollisions.Add(cols.Get(i));
 			}
 
 			return result;
@@ -779,7 +770,7 @@ namespace csBump
 				this.filter = filter;
 			}
 
-			public Response Filter(Item item, Item other)
+			public IResponse Filter(Item item, Item other)
 			{
 				if (visited.Contains(other))
 				{
@@ -802,10 +793,10 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Response.Result Move(Item item, float goalX, float goalY, CollisionFilter filter)
+		public virtual IResponse.Result Move(Item item, float goalX, float goalY, CollisionFilter filter)
 		{
-			Response.Result result = Check(item, goalX, goalY, filter);
-			Update(item, result.goalX, result.goalY);
+			IResponse.Result result = Check(item, goalX, goalY, filter);
+			Update(item, result.mGoalX, result.mGoalY);
 			return result;
 		}
 
@@ -818,7 +809,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual float GetCellSize()
 		{
-			return cellSize;
+			return mCellSize;
 		}
 
 		// this is conscious of tunneling
@@ -847,13 +838,13 @@ namespace csBump
 		public virtual List<Item> QueryRect(float x, float y, float w, float h, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			grid.Grid_toCellRect(cellSize, x, y, w, h, query_c);
-			float cl = query_c.x, ct = query_c.y, cw = query_c.w, ch = query_c.h;
+			mGrid.Grid_toCellRect(mCellSize, x, y, w, h, query_c);
+			float cl = query_c.mX, ct = query_c.mY, cw = query_c.mWidth, ch = query_c.mHeight;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
 				Rect rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect.Rect_isIntersecting(x, y, w, h, rect.x, rect.y, rect.w, rect.h))
+				if ((filter == null || filter.Filter(item, null) != null) && Rect.Rect_isIntersecting(x, y, w, h, rect.mX, rect.mY, rect.mWidth, rect.mHeight))
 				{
 					items.Add(item);
 				}
@@ -881,13 +872,13 @@ namespace csBump
 		{
 			items.Clear();
 			ToCell(x, y, query_point);
-			float cx = query_point.x;
-			float cy = query_point.y;
+			float cx = query_point.mX;
+			float cy = query_point.mY;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
 				Rect rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect.Rect_containsPoint(rect.x, rect.y, rect.w, rect.h, x, y))
+				if ((filter == null || filter.Filter(item, null) != null) && Rect.Rect_containsPoint(rect.mX, rect.mY, rect.mWidth, rect.mHeight, x, y))
 				{
 					items.Add(item);
 				}
@@ -917,7 +908,7 @@ namespace csBump
 			List<ItemInfo> infos = GetInfoAboutItemsTouchedBySegment(x1, y1, x2, y2, filter, query_infos);
 			foreach (ItemInfo info in infos)
 			{
-				items.Add(info.item);
+				items.Add(info.mItem);
 			}
 
 			return items;
@@ -938,13 +929,13 @@ namespace csBump
 			float dy = y2 - y1;
 			foreach (ItemInfo info in infos)
 			{
-				float ti1 = info.ti1;
-				float ti2 = info.ti2;
-				info.weight = 0;
-				info.x1 = x1 + dx * ti1;
-				info.y1 = y1 + dy * ti1;
-				info.x2 = x1 + dx * ti2;
-				info.y2 = y1 + dy * ti2;
+				float ti1 = info.mTI1;
+				float ti2 = info.mTI2;
+				info.mWeight = 0;
+				info.mX1 = x1 + dx * ti1;
+				info.mY1 = y1 + dy * ti1;
+				info.mX2 = x1 + dx * ti2;
+				info.mY2 = y1 + dy * ti2;
 			}
 
 			return infos;
@@ -963,7 +954,7 @@ namespace csBump
 			List<ItemInfo> infos = GetInfoAboutItemsTouchedByRay(originX, originY, dirX, dirY, filter, query_infos);
 			foreach (ItemInfo info in infos)
 			{
-				items.Add(info.item);
+				items.Add(info.mItem);
 			}
 
 			return items;
@@ -982,13 +973,13 @@ namespace csBump
 			infos = GetInfoAboutItemsTouchedByRay(originX, originY, dirX, dirY, filter, infos);
 			foreach (ItemInfo info in infos)
 			{
-				float ti1 = info.ti1;
-				float ti2 = info.ti2;
-				info.weight = 0;
-				info.x1 = originX + dirX * ti1;
-				info.y1 = originY + dirY * ti1;
-				info.x2 = originX + dirX * ti2;
-				info.y2 = originY + dirY * ti2;
+				float ti1 = info.mTI1;
+				float ti2 = info.mTI2;
+				info.mWeight = 0;
+				info.mX1 = originX + dirX * ti1;
+				info.mY1 = originY + dirY * ti1;
+				info.mX2 = originX + dirX * ti2;
+				info.mY2 = originY + dirY * ti2;
 			}
 
 			return infos;

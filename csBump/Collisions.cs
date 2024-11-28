@@ -1,53 +1,31 @@
-﻿/*
- * Copyright 2017 DongBat.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-using csBump.util;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-
-namespace csBump
+﻿namespace csBump
 {
 	/// <summary>
-	///  * @author tao
+	///  Represents a list of collisions
+	///  TO DO: Get rid of this.
 	/// </summary>
 	public class Collisions : IComparer<int>
 	{
-		private readonly List<bool> overlaps = new List<bool>();
-		private readonly List<float> tis = new List<float>();
-		private readonly List<float> moveXs = new List<float>();
-		private readonly List<float> moveYs = new List<float>();
-		private readonly List<int> normalXs = new List<int>();
-		private readonly List<int> normalYs = new List<int>();
-		private readonly List<float> touchXs = new List<float>();
-		private readonly List<float> touchYs = new List<float>();
-		private readonly List<float> x1s = new List<float>();
-		private readonly List<float> y1s = new List<float>();
-		private readonly List<float> w1s = new List<float>();
-		private readonly List<float> h1s = new List<float>();
-		private readonly List<float> x2s = new List<float>();
-		private readonly List<float> y2s = new List<float>();
-		private readonly List<float> w2s = new List<float>();
-		private readonly List<float> h2s = new List<float>();
-		public List<Item> items = new List<Item>();
-		public List<Item> others = new List<Item>();
-		public List<Response> types = new List<Response>();
-		private int size = 0;
+		private readonly List<bool> mOverlaps = new List<bool>();
+		private readonly List<float> mTIs = new List<float>();
+		private readonly List<float> mMoveXs = new List<float>();
+		private readonly List<float> mMoveYs = new List<float>();
+		private readonly List<int> mNormalXs = new List<int>();
+		private readonly List<int> mNormalYs = new List<int>();
+		private readonly List<float> mTouchXs = new List<float>();
+		private readonly List<float> mTouchYs = new List<float>();
+		private readonly List<float> mX1s = new List<float>();
+		private readonly List<float> mY1s = new List<float>();
+		private readonly List<float> mW1s = new List<float>();
+		private readonly List<float> mH1s = new List<float>();
+		private readonly List<float> mX2s = new List<float>();
+		private readonly List<float> mY2s = new List<float>();
+		private readonly List<float> mW2s = new List<float>();
+		private readonly List<float> mH2s = new List<float>();
+		public List<Item> mItems = new List<Item>();
+		public List<Item> mOthers = new List<Item>();
+		public List<IResponse> mTypes = new List<IResponse>();
+		private int mSize = 0;
 
 		public Collisions()
 		{
@@ -55,131 +33,131 @@ namespace csBump
 
 		public Collisions(Collisions other)
 		{
-			overlaps = new List<bool>(other.overlaps);
-			tis = new List<float>(other.tis);
-			moveXs = new List<float>(other.moveXs);
-			moveYs = new List<float>(other.moveYs);
-			normalXs = new List<int>(other.normalXs);
-			normalYs = new List<int>(other.normalYs);
-			touchXs = new List<float>(other.touchXs);
-			touchYs = new List<float>(other.touchYs);
-			x1s = new List<float>(other.x1s);
-			y1s = new List<float>(other.y1s);
-			w1s = new List<float>(other.w1s);
-			h1s = new List<float>(other.h1s);
-			x2s = new List<float>(other.x2s);
-			y2s = new List<float>(other.y2s);
-			w2s = new List<float>(other.w2s);
-			h2s = new List<float>(other.h2s);
-			items = new List<Item>(other.items);
-			others = new List<Item>(other.others);
-			types = new List<Response>(other.types);
-			size = other.size;
+			mOverlaps = new List<bool>(other.mOverlaps);
+			mTIs = new List<float>(other.mTIs);
+			mMoveXs = new List<float>(other.mMoveXs);
+			mMoveYs = new List<float>(other.mMoveYs);
+			mNormalXs = new List<int>(other.mNormalXs);
+			mNormalYs = new List<int>(other.mNormalYs);
+			mTouchXs = new List<float>(other.mTouchXs);
+			mTouchYs = new List<float>(other.mTouchYs);
+			mX1s = new List<float>(other.mX1s);
+			mY1s = new List<float>(other.mY1s);
+			mW1s = new List<float>(other.mW1s);
+			mH1s = new List<float>(other.mH1s);
+			mX2s = new List<float>(other.mX2s);
+			mY2s = new List<float>(other.mY2s);
+			mW2s = new List<float>(other.mW2s);
+			mH2s = new List<float>(other.mH2s);
+			mItems = new List<Item>(other.mItems);
+			mOthers = new List<Item>(other.mOthers);
+			mTypes = new List<IResponse>(other.mTypes);
+			mSize = other.mSize;
 		}
 
 		public virtual void Add(Collision col)
 		{
-			Add(col.overlaps, col.ti, col.move.x, col.move.y, col.normal.x, col.normal.y, col.touch.x, col.touch.y, col.itemRect.x, col.itemRect.y, col.itemRect.w, col.itemRect.h, col.otherRect.x, col.otherRect.y, col.otherRect.w, col.otherRect.h, col.item, col.other, col.type);
+			Add(col.mOverlaps, col.mTI, col.mMove.mX, col.mMove.mY, col.mNormal.mX, col.mNormal.mY, col.mTouch.mX, col.mTouch.mY, col.mItemRect.mX, col.mItemRect.mY, col.mItemRect.mWidth, col.mItemRect.mHeight, col.mOtherRect.mX, col.mOtherRect.mY, col.mOtherRect.mWidth, col.mOtherRect.mHeight, col.mItem, col.mOther, col.mType);
 		}
 
-		public virtual void Add(bool overlap, float ti, float moveX, float moveY, int normalX, int normalY, float touchX, float touchY, float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, Item item, Item other, Response type)
+		public virtual void Add(bool overlap, float ti, float moveX, float moveY, int normalX, int normalY, float touchX, float touchY, float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, Item item, Item other, IResponse type)
 		{
-			size++;
-			overlaps.Add(overlap);
-			tis.Add(ti);
-			moveXs.Add(moveX);
-			moveYs.Add(moveY);
-			normalXs.Add(normalX);
-			normalYs.Add(normalY);
-			touchXs.Add(touchX);
-			touchYs.Add(touchY);
-			x1s.Add(x1);
-			y1s.Add(y1);
-			w1s.Add(w1);
-			h1s.Add(h1);
-			x2s.Add(x2);
-			y2s.Add(y2);
-			w2s.Add(w2);
-			h2s.Add(h2);
-			items.Add(item);
-			others.Add(other);
-			types.Add(type);
+			mSize++;
+			mOverlaps.Add(overlap);
+			mTIs.Add(ti);
+			mMoveXs.Add(moveX);
+			mMoveYs.Add(moveY);
+			mNormalXs.Add(normalX);
+			mNormalYs.Add(normalY);
+			mTouchXs.Add(touchX);
+			mTouchYs.Add(touchY);
+			mX1s.Add(x1);
+			mY1s.Add(y1);
+			mW1s.Add(w1);
+			mH1s.Add(h1);
+			mX2s.Add(x2);
+			mY2s.Add(y2);
+			mW2s.Add(w2);
+			mH2s.Add(h2);
+			mItems.Add(item);
+			mOthers.Add(other);
+			mTypes.Add(type);
 		}
 
 		private readonly Collision collision = new Collision();
 		public virtual Collision Get(int index)
 		{
-			if (index >= size)
+			if (index >= mSize)
 			{
 				return null;
 			}
 
-			collision.Set(overlaps[index], tis[index], moveXs[index], moveYs[index], normalXs[index], normalYs[index], touchXs[index], touchYs[index], x1s[index], y1s[index], w1s[index], h1s[index], x2s[index], y2s[index], w2s[index], h2s[index]);
-			collision.item = items[index];
-			collision.other = others[index];
-			collision.type = types[index];
+			collision.Set(mOverlaps[index], mTIs[index], mMoveXs[index], mMoveYs[index], mNormalXs[index], mNormalYs[index], mTouchXs[index], mTouchYs[index], mX1s[index], mY1s[index], mW1s[index], mH1s[index], mX2s[index], mY2s[index], mW2s[index], mH2s[index]);
+			collision.mItem = mItems[index];
+			collision.mOther = mOthers[index];
+			collision.mType = mTypes[index];
 			return collision;
 		}
 
 		public virtual void Remove(int index)
 		{
-			if (index < size)
+			if (index < mSize)
 			{
-				size--;
-				overlaps.RemoveAt(index);
-				tis.RemoveAt(index);
-				moveXs.RemoveAt(index);
-				moveYs.RemoveAt(index);
-				normalXs.RemoveAt(index);
-				normalYs.RemoveAt(index);
-				touchXs.RemoveAt(index);
-				touchYs.RemoveAt(index);
-				x1s.RemoveAt(index);
-				y1s.RemoveAt(index);
-				w1s.RemoveAt(index);
-				h1s.RemoveAt(index);
-				x2s.RemoveAt(index);
-				y2s.RemoveAt(index);
-				w2s.RemoveAt(index);
-				h2s.RemoveAt(index);
-				items.RemoveAt(index);
-				others.RemoveAt(index);
-				types.RemoveAt(index);
+				mSize--;
+				mOverlaps.RemoveAt(index);
+				mTIs.RemoveAt(index);
+				mMoveXs.RemoveAt(index);
+				mMoveYs.RemoveAt(index);
+				mNormalXs.RemoveAt(index);
+				mNormalYs.RemoveAt(index);
+				mTouchXs.RemoveAt(index);
+				mTouchYs.RemoveAt(index);
+				mX1s.RemoveAt(index);
+				mY1s.RemoveAt(index);
+				mW1s.RemoveAt(index);
+				mH1s.RemoveAt(index);
+				mX2s.RemoveAt(index);
+				mY2s.RemoveAt(index);
+				mW2s.RemoveAt(index);
+				mH2s.RemoveAt(index);
+				mItems.RemoveAt(index);
+				mOthers.RemoveAt(index);
+				mTypes.RemoveAt(index);
 			}
 		}
 
 		public virtual int Size()
 		{
-			return size;
+			return mSize;
 		}
 
 		public virtual bool IsEmpty()
 		{
-			return size == 0;
+			return mSize == 0;
 		}
 
 		public virtual void Clear()
 		{
-			size = 0;
-			overlaps.Clear();
-			tis.Clear();
-			moveXs.Clear();
-			moveYs.Clear();
-			normalXs.Clear();
-			normalYs.Clear();
-			touchXs.Clear();
-			touchYs.Clear();
-			x1s.Clear();
-			y1s.Clear();
-			w1s.Clear();
-			h1s.Clear();
-			x2s.Clear();
-			y2s.Clear();
-			w2s.Clear();
-			h2s.Clear();
-			items.Clear();
-			others.Clear();
-			types.Clear();
+			mSize = 0;
+			mOverlaps.Clear();
+			mTIs.Clear();
+			mMoveXs.Clear();
+			mMoveYs.Clear();
+			mNormalXs.Clear();
+			mNormalYs.Clear();
+			mTouchXs.Clear();
+			mTouchYs.Clear();
+			mX1s.Clear();
+			mY1s.Clear();
+			mW1s.Clear();
+			mH1s.Clear();
+			mX2s.Clear();
+			mY2s.Clear();
+			mW2s.Clear();
+			mH2s.Clear();
+			mItems.Clear();
+			mOthers.Clear();
+			mTypes.Clear();
 		}
 
 		private readonly List<int> order = new List<int>();
@@ -215,43 +193,43 @@ namespace csBump
 		public virtual void Sort()
 		{
 			order.Clear();
-			for (int i = 0; i < size; i++)
+			for (int i = 0; i < mSize; i++)
 			{
 				order.Add(i);
 			}
 
 			order.Sort(this);
-			KeySort(order, overlaps);
-			KeySort(order, tis);
-			KeySort(order, moveXs);
-			KeySort(order, moveYs);
-			KeySort(order, normalXs);
-			KeySort(order, normalYs);
-			KeySort(order, touchXs);
-			KeySort(order, touchYs);
-			KeySort(order, x1s);
-			KeySort(order, y1s);
-			KeySort(order, w1s);
-			KeySort(order, h1s);
-			KeySort(order, x2s);
-			KeySort(order, y2s);
-			KeySort(order, w2s);
-			KeySort(order, h2s);
-			KeySort(order, items);
-			KeySort(order, others);
-			KeySort(order, types);
+			KeySort(order, mOverlaps);
+			KeySort(order, mTIs);
+			KeySort(order, mMoveXs);
+			KeySort(order, mMoveYs);
+			KeySort(order, mNormalXs);
+			KeySort(order, mNormalYs);
+			KeySort(order, mTouchXs);
+			KeySort(order, mTouchYs);
+			KeySort(order, mX1s);
+			KeySort(order, mY1s);
+			KeySort(order, mW1s);
+			KeySort(order, mH1s);
+			KeySort(order, mX2s);
+			KeySort(order, mY2s);
+			KeySort(order, mW2s);
+			KeySort(order, mH2s);
+			KeySort(order, mItems);
+			KeySort(order, mOthers);
+			KeySort(order, mTypes);
 		}
 
 		public int Compare(int a, int b)
 		{
-			if (tis[a] == (tis[b]))
+			if (mTIs[a] == (mTIs[b]))
 			{
-				float ad = Rect.Rect_getSquareDistance(x1s[a], y1s[a], w1s[a], h1s[a], x2s[a], y2s[a], w2s[a], h2s[a]);
-				float bd = Rect.Rect_getSquareDistance(x1s[a], y1s[a], w1s[a], h1s[a], x2s[b], y2s[b], w2s[b], h2s[b]);
+				float ad = Rect.Rect_getSquareDistance(mX1s[a], mY1s[a], mW1s[a], mH1s[a], mX2s[a], mY2s[a], mW2s[a], mH2s[a]);
+				float bd = Rect.Rect_getSquareDistance(mX1s[a], mY1s[a], mW1s[a], mH1s[a], mX2s[b], mY2s[b], mW2s[b], mH2s[b]);
 				return ad.CompareTo(bd);
 			}
 
-			return tis[a].CompareTo(tis[b]);
+			return mTIs[a].CompareTo(mTIs[b]);
 		}
 	}
 }
