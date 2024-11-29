@@ -43,8 +43,9 @@ namespace csBump
 		private void AddItemToCell(Item item, float cx, float cy)
 		{
 			Point pt = new Point(cx, cy);
-			Cell cell = mCellMap[pt];
-			if (cell == null)
+			Cell? cell = null;
+			
+			if (!mCellMap.TryGetValue(pt, out cell))
 			{
 				cell = new Cell();
 				mCellMap.Add(pt, cell);
@@ -92,10 +93,9 @@ namespace csBump
 			{
 				for (float cx = cl; cx < cl + cw; cx++, pt.mX++)
 				{
-					Cell cell = mCellMap[pt];
-					if (cell != null && !(cell.mItems.Count == 0))
+					Cell? cell = null;
+					if (mCellMap.TryGetValue(pt, out cell) && !(cell.mItems.Count == 0))
 					{
-
 						// this is conscious of tunneling
 						foreach(Item item in cell.mItems)
 						{
