@@ -1,61 +1,47 @@
-﻿namespace csBump
+﻿#if !MONOGAME_BUILD
+namespace csBump
 {
-	/// <summary>
-	/// Represents a 2D point with float
-	/// </summary>
-	public class Point
+	public struct Point
 	{
-		public float mX;
-		public float mY;
+		public int X {  get; set; }
+		public int Y { get; set; }
 
-		public Point()
+		public Point(int x, int y)
 		{
+			X = x;
+			Y = y;
 		}
 
-		public Point(float x, float y)
+		public override bool Equals(object? obj)
 		{
-			this.mX = x;
-			this.mY = y;
-		}
-
-		public void Set(float x, float y)
-		{
-			this.mX = x;
-			this.mY = y;
-		}
-
-		public override bool Equals(object? o)
-		{
-			if (ReferenceEquals(this, o))
-			{
-				return true;
-			}
-
-			if (o == null || GetType() != o.GetType())
+			if (obj == null)
 			{
 				return false;
 			}
 
-			Point point = (Point)o;
+			if (obj is Point otherPoint)
+			{
+				return X == otherPoint.X && Y == otherPoint.Y;
+			}
 
-			return point.mX == mX && point.mY == mY;
+			return false;
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				// Combine the hash codes of x and y
-				int hash = 1471;
-				hash = hash * 2647 + mX.GetHashCode();
-				hash = hash * 6091 + mY.GetHashCode();
+				var hash = 17;
+				hash = hash * 23 + X.GetHashCode();
+				hash = hash * 23 + Y.GetHashCode();
 				return hash;
 			}
 		}
 
 		public override string ToString()
 		{
-			return "(" + mX + ", " + mY + ')';
+			return "(" + X + ", " + Y + ')';
 		}
 	}
 }
+#endif

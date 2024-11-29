@@ -1,39 +1,43 @@
-﻿namespace csBump
+﻿#if MONOGAME_BUILD
+using Microsoft.Xna.Framework;
+#endif
+
+namespace csBump
 {
 	public class Grid
 	{
-		private readonly Point mGridTraverseC1 = new Point();
-		private readonly Point mGridTraverseC2 = new Point();
-		private readonly Point mGridTraverseInitStepX = new Point();
-		private readonly Point mGridTraverseInitStepY = new Point();
-		private readonly Point mGridToCellRectCXY = new Point();
+		private readonly Vector2 mGridTraverseC1 = new Vector2(0.0f, 0.0f);
+		private readonly Vector2 mGridTraverseC2 = new Vector2(0.0f, 0.0f);
+		private readonly Vector2 mGridTraverseInitStepX = new Vector2(0.0f, 0.0f);
+		private readonly Vector2 mGridTraverseInitStepY = new Vector2(0.0f, 0.0f);
+		private readonly Vector2 mGridToCellRectCXY = new Vector2(0.0f, 0.0f);
 
-		public static void Grid_toWorld(float cellSize, float cx, float cy, Point point)
+		public static void Grid_toWorld(float cellSize, float cx, float cy, Vector2 point)
 		{
-			point.Set((cx - 1) * cellSize,(cy - 1) * cellSize);
+			point = new Vector2((cx - 1) * cellSize,(cy - 1) * cellSize);
 		}
 
-		public static void Grid_toCell(float cellSize, float x, float y, Point point)
+		public static void Grid_toCell(float cellSize, float x, float y, Vector2 point)
 		{
-			point.Set(MathF.Floor(x / cellSize) + 1, MathF.Floor(y / cellSize) + 1);
+			point = new Vector2(MathF.Floor(x / cellSize) + 1, MathF.Floor(y / cellSize) + 1);
 		}
 
-		public static int Grid_traverse_initStep(float cellSize, float ct, float t1, float t2, Point point)
+		public static int Grid_traverse_initStep(float cellSize, float ct, float t1, float t2, Vector2 point)
 		{
 			float v = t2 - t1;
 			if (v > 0)
 			{
-				point.Set(cellSize / v, ((ct + v) * cellSize - t1) / v);
+				point = new Vector2(cellSize / v, ((ct + v) * cellSize - t1) / v);
 				return 1;
 			}
 			else if (v < 0)
 			{
-				point.Set(-cellSize / v, ((ct + v - 1) * cellSize - t1) / v);
+				point = new Vector2(-cellSize / v, ((ct + v - 1) * cellSize - t1) / v);
 				return -1;
 			}
 			else
 			{
-				point.Set(float.MaxValue, float.MaxValue);
+				point = new Vector2(float.MaxValue, float.MaxValue);
 				return 0;
 			}
 		}
@@ -46,17 +50,17 @@
 		public virtual void Grid_traverse(float cellSize, float x1, float y1, float x2, float y2, TraverseCallback f)
 		{
 			Grid_toCell(cellSize, x1, y1, mGridTraverseC1);
-			float cx1 = mGridTraverseC1.mX;
-			float cy1 = mGridTraverseC1.mY;
+			float cx1 = mGridTraverseC1.X;
+			float cy1 = mGridTraverseC1.Y;
 			Grid_toCell(cellSize, x2, y2, mGridTraverseC2);
-			float cx2 = mGridTraverseC2.mX;
-			float cy2 = mGridTraverseC2.mY;
+			float cx2 = mGridTraverseC2.X;
+			float cy2 = mGridTraverseC2.Y;
 			int stepX = Grid_traverse_initStep(cellSize, cx1, x1, x2, mGridTraverseInitStepX);
 			int stepY = Grid_traverse_initStep(cellSize, cy1, y1, y2, mGridTraverseInitStepY);
-			float dx = mGridTraverseInitStepX.mX;
-			float tx = mGridTraverseInitStepX.mY;
-			float dy = mGridTraverseInitStepY.mX;
-			float ty = mGridTraverseInitStepY.mY;
+			float dx = mGridTraverseInitStepX.X;
+			float tx = mGridTraverseInitStepX.Y;
+			float dy = mGridTraverseInitStepY.X;
+			float ty = mGridTraverseInitStepY.Y;
 			float cx = cx1, cy = cy1;
 			f.OnTraverse(cx, cy, stepX, stepY);
 			/*The default implementation had an infinite loop problem when
@@ -97,14 +101,14 @@
 		public virtual void Grid_traverseRay(float cellSize, float x1, float y1, float dirX, float dirY, TraverseCallback f)
 		{
 			Grid_toCell(cellSize, x1, y1, mGridTraverseC1);
-			float cx1 = mGridTraverseC1.mX;
-			float cy1 = mGridTraverseC1.mY;
+			float cx1 = mGridTraverseC1.X;
+			float cy1 = mGridTraverseC1.Y;
 			int stepX = Grid_traverse_initStep(cellSize, cx1, x1, x1 + dirX, mGridTraverseInitStepX);
 			int stepY = Grid_traverse_initStep(cellSize, cy1, y1, y1 + dirY, mGridTraverseInitStepY);
-			float dx = mGridTraverseInitStepX.mX;
-			float tx = mGridTraverseInitStepX.mY;
-			float dy = mGridTraverseInitStepY.mX;
-			float ty = mGridTraverseInitStepY.mY;
+			float dx = mGridTraverseInitStepX.X;
+			float tx = mGridTraverseInitStepX.Y;
+			float dy = mGridTraverseInitStepY.X;
+			float ty = mGridTraverseInitStepY.Y;
 			float cx = cx1, cy = cy1;
 			f.OnTraverse(cx, cy, stepX, stepY);
 			bool cont = true; //stop iterating if TraverseCallback reports that cell coordinates are outside of the world.
@@ -135,8 +139,8 @@
 		public virtual Rect Grid_toCellRect(float cellSize, float x, float y, float w, float h, Rect rect)
 		{
 			Grid_toCell(cellSize, x, y, mGridToCellRectCXY);
-			float cx = mGridToCellRectCXY.mX;
-			float cy = mGridToCellRectCXY.mY;
+			float cx = mGridToCellRectCXY.X;
+			float cy = mGridToCellRectCXY.Y;
 			float cr = MathF.Ceiling((x + w) / cellSize);
 			float cb = MathF.Ceiling((y + h) / cellSize);
 			rect.Set(cx, cy, cr - cx + 1, cb - cy + 1);

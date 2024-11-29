@@ -1,4 +1,8 @@
-﻿using static csBump.IResponse;
+﻿#if MONOGAME_BUILD
+using Microsoft.Xna.Framework;
+#endif
+
+using static csBump.IResponse;
 
 namespace csBump
 {
@@ -25,12 +29,12 @@ namespace csBump
 	{
 		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
 		{
-			Point tch = collision.mTouch;
-			Point move = collision.mMove;
-			float sx = tch.mX, sy = tch.mY;
-			if (move.mX != 0 || move.mY != 0)
+			Vector2 tch = collision.mTouch;
+			Vector2 move = collision.mMove;
+			float sx = tch.X, sy = tch.Y;
+			if (move.X != 0 || move.Y != 0)
 			{
-				if (collision.mNormal.mX == 0)
+				if (collision.mNormal.X == 0)
 				{
 					sx = goalX;
 				}
@@ -40,8 +44,8 @@ namespace csBump
 				}
 			}
 
-			x = tch.mX;
-			y = tch.mY;
+			x = tch.X;
+			y = tch.Y;
 			goalX = sx;
 			goalY = sy;
 			result.mProjectedCollisions.Clear();
@@ -56,7 +60,7 @@ namespace csBump
 		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
 		{
 			result.mProjectedCollisions.Clear();
-			result.Set(collision.mTouch.mX, collision.mTouch.mY);
+			result.Set(collision.mTouch.X, collision.mTouch.Y);
 			return result;
 		}
 	}
@@ -76,14 +80,14 @@ namespace csBump
 	{
 		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
 		{
-			Point tch = collision.mTouch;
-			Point move = collision.mMove;
-			float bx = tch.mX, by = tch.mY;
-			if (move.mX != 0 || move.mY != 0)
+			Vector2 tch = collision.mTouch;
+			Vector2 move = collision.mMove;
+			float bx = tch.X, by = tch.Y;
+			if (move.X != 0 || move.Y != 0)
 			{
-				float bnx = goalX - tch.mX;
-				float bny = goalY - tch.mY;
-				if (collision.mNormal.mX == 0)
+				float bnx = goalX - tch.X;
+				float bny = goalY - tch.Y;
+				if (collision.mNormal.X == 0)
 				{
 					bny = -bny;
 				}
@@ -91,12 +95,12 @@ namespace csBump
 				{
 					bnx = -bnx;
 				}
-				bx = tch.mX + bnx;
-				by = tch.mY + bny;
+				bx = tch.X + bnx;
+				by = tch.Y + bny;
 			}
 
-			x = tch.mX;
-			y = tch.mY;
+			x = tch.X;
+			y = tch.Y;
 			goalX = bx;
 			goalY = by;
 			result.mProjectedCollisions.Clear();

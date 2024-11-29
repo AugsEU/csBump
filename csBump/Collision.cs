@@ -1,4 +1,8 @@
-﻿namespace csBump
+﻿#if MONOGAME_BUILD
+using Microsoft.Xna.Framework;
+#endif
+
+namespace csBump
 {
 	/// <summary>
 	/// Represents a collision between two items.
@@ -7,9 +11,9 @@
 	{
 		public bool mOverlaps;
 		public float mTI;
-		public Point mMove = new Point();
-		public IntPoint mNormal = new IntPoint();
-		public Point mTouch = new Point();
+		public Vector2 mMove = new Vector2(0.0f, 0.0f);
+		public Point mNormal = new Point(0, 0);
+		public Vector2 mTouch = new Vector2(0.0f, 0.0f);
 		public Rect mItemRect = new Rect();
 		public Rect mOtherRect = new Rect();
 		public Item? mItem;
@@ -24,9 +28,9 @@
 		{
 			mOverlaps = overlaps;
 			mTI = ti;
-			mMove.Set(moveX, moveY);
-			mNormal.Set(normalX, normalY);
-			mTouch.Set(touchX, touchY);
+			mMove = new Vector2(moveX, moveY);
+			mNormal = new Point(normalX, normalY);
+			mTouch = new Vector2(touchX, touchY);
 			mItemRect.Set(x1, y1, w1, h1);
 			mOtherRect.Set(x2, y2, w2, h2);
 		}

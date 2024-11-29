@@ -1,4 +1,8 @@
-﻿namespace csBump
+﻿#if MONOGAME_BUILD
+using Microsoft.Xna.Framework;
+#endif
+
+namespace csBump
 {
 	/// <summary>
 	/// Utility functions for rect
@@ -7,10 +11,10 @@
 	public class RectHelper
 	{
 		private readonly Rect mRectDetectCollisionDiff = new Rect();
-		private readonly Point mRectDetectCollisionNearestCorner = new Point();
-		private readonly Point mRectDetectCollisionGetSegmentIntersectionIndicesTI = new Point();
-		private readonly IntPoint mRectDetectCollisionGetSegmentIntersectionIndicesN1 = new IntPoint();
-		private readonly IntPoint mRectDetectCollisionGetSegmentIntersectionIndicesN2 = new IntPoint();
+		private readonly Vector2 mRectDetectCollisionNearestCorner = new Vector2(0.0f, 0.0f);
+		private readonly Vector2 mRectDetectCollisionGetSegmentIntersectionIndicesTI = new Vector2(0.0f, 0.0f);
+		private readonly Point mRectDetectCollisionGetSegmentIntersectionIndicesN1 = new Point(0, 0);
+		private readonly Point mRectDetectCollisionGetSegmentIntersectionIndicesN2 = new Point(0, 0);
 		private readonly Collision RectDetectCollisionGetSegmentIntersectionIndicesCol = new Collision();
 
 
@@ -32,8 +36,8 @@
 
 				//item was intersecting other
 				Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, mRectDetectCollisionNearestCorner);
-				float px = mRectDetectCollisionNearestCorner.mX;
-				float py = mRectDetectCollisionNearestCorner.mY;
+				float px = mRectDetectCollisionNearestCorner.X;
+				float py = mRectDetectCollisionNearestCorner.Y;
 
 				//area of intersection
 				float wi = MathF.Min(w1, MathF.Abs(px));
@@ -44,10 +48,10 @@
 			else
 			{
 				bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, float.MinValue, float.MaxValue, mRectDetectCollisionGetSegmentIntersectionIndicesTI, mRectDetectCollisionGetSegmentIntersectionIndicesN1, mRectDetectCollisionGetSegmentIntersectionIndicesN2);
-				float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.mX;
-				float ti2 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.mY;
-				int nx1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.mX;
-				int ny1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.mY;
+				float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.X;
+				float ti2 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.Y;
+				int nx1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.X;
+				int ny1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.Y;
 
 				//item tunnels into other
 				if (intersect && ti1 < 1 && MathF.Abs(ti1 - ti2) >= Extra.DELTA && (0 < ti1 + Extra.DELTA || 0 == ti1 && ti2 > 0))
@@ -71,8 +75,8 @@
 				{
 					//intersecting and not moving - use minimum displacement vector
 					Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, mRectDetectCollisionNearestCorner);
-					float px = mRectDetectCollisionNearestCorner.mX;
-					float py = mRectDetectCollisionNearestCorner.mY;
+					float px = mRectDetectCollisionNearestCorner.X;
+					float py = mRectDetectCollisionNearestCorner.Y;
 					if (MathF.Abs(px) < MathF.Abs(py))
 					{
 						py = 0;
@@ -92,9 +96,9 @@
 
 					//intersecting and moving - move in the opposite direction
 					bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -float.MaxValue, 1, mRectDetectCollisionGetSegmentIntersectionIndicesTI, mRectDetectCollisionGetSegmentIntersectionIndicesN1, mRectDetectCollisionGetSegmentIntersectionIndicesN2);
-					float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.mX;
-					nx = mRectDetectCollisionGetSegmentIntersectionIndicesN1.mX;
-					ny = mRectDetectCollisionGetSegmentIntersectionIndicesN1.mY;
+					float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.X;
+					nx = mRectDetectCollisionGetSegmentIntersectionIndicesN1.X;
+					ny = mRectDetectCollisionGetSegmentIntersectionIndicesN1.Y;
 					if (!intersect)
 					{
 						return null;
