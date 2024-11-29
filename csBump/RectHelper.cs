@@ -10,12 +10,12 @@ namespace csBump
 	/// </summary>
 	public class RectHelper
 	{
-		private readonly Rect mRectDetectCollisionDiff = new Rect();
-		private readonly Vector2 mRectDetectCollisionNearestCorner = new Vector2(0.0f, 0.0f);
-		private readonly Vector2 mRectDetectCollisionGetSegmentIntersectionIndicesTI = new Vector2(0.0f, 0.0f);
-		private readonly Point mRectDetectCollisionGetSegmentIntersectionIndicesN1 = new Point(0, 0);
-		private readonly Point mRectDetectCollisionGetSegmentIntersectionIndicesN2 = new Point(0, 0);
-		private readonly Collision RectDetectCollisionGetSegmentIntersectionIndicesCol = new Collision();
+		private Rect mRectDetectCollisionDiff = new Rect();
+		private Vector2 mRectDetectCollisionNearestCorner = new Vector2(0.0f, 0.0f);
+		private Vector2 mRectDetectCollisionGetSegmentIntersectionIndicesTI = new Vector2(0.0f, 0.0f);
+		private Point mRectDetectCollisionGetSegmentIntersectionIndicesN1 = new Point(0, 0);
+		private Point mRectDetectCollisionGetSegmentIntersectionIndicesN2 = new Point(0, 0);
+		private Collision RectDetectCollisionGetSegmentIntersectionIndicesCol = new Collision();
 
 
 		public virtual Collision? Rect_detectCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, float goalX, float goalY)
@@ -35,7 +35,7 @@ namespace csBump
 			{
 
 				//item was intersecting other
-				Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, mRectDetectCollisionNearestCorner);
+				Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, out mRectDetectCollisionNearestCorner);
 				float px = mRectDetectCollisionNearestCorner.X;
 				float py = mRectDetectCollisionNearestCorner.Y;
 
@@ -47,7 +47,7 @@ namespace csBump
 			}
 			else
 			{
-				bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, float.MinValue, float.MaxValue, mRectDetectCollisionGetSegmentIntersectionIndicesTI, mRectDetectCollisionGetSegmentIntersectionIndicesN1, mRectDetectCollisionGetSegmentIntersectionIndicesN2);
+				bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, float.MinValue, float.MaxValue, out mRectDetectCollisionGetSegmentIntersectionIndicesTI, out mRectDetectCollisionGetSegmentIntersectionIndicesN1, out mRectDetectCollisionGetSegmentIntersectionIndicesN2);
 				float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.X;
 				float ti2 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.Y;
 				int nx1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.X;
@@ -74,7 +74,7 @@ namespace csBump
 				if (dx == 0 && dy == 0)
 				{
 					//intersecting and not moving - use minimum displacement vector
-					Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, mRectDetectCollisionNearestCorner);
+					Rect.Rect_getNearestCorner(x, y, w, h, 0, 0, out mRectDetectCollisionNearestCorner);
 					float px = mRectDetectCollisionNearestCorner.X;
 					float py = mRectDetectCollisionNearestCorner.Y;
 					if (MathF.Abs(px) < MathF.Abs(py))
@@ -95,7 +95,7 @@ namespace csBump
 				{
 
 					//intersecting and moving - move in the opposite direction
-					bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -float.MaxValue, 1, mRectDetectCollisionGetSegmentIntersectionIndicesTI, mRectDetectCollisionGetSegmentIntersectionIndicesN1, mRectDetectCollisionGetSegmentIntersectionIndicesN2);
+					bool intersect = Rect.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -float.MaxValue, 1, out mRectDetectCollisionGetSegmentIntersectionIndicesTI, out mRectDetectCollisionGetSegmentIntersectionIndicesN1, out mRectDetectCollisionGetSegmentIntersectionIndicesN2);
 					float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.X;
 					nx = mRectDetectCollisionGetSegmentIntersectionIndicesN1.X;
 					ny = mRectDetectCollisionGetSegmentIntersectionIndicesN1.Y;

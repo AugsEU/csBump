@@ -216,31 +216,31 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private readonly List<Cell> info_cells = new List<Cell>();
+		private List<Cell> info_cells = new List<Cell>();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private readonly Vector2 info_ti = new Vector2(0.0f, 0.0f);
+		private Vector2 info_ti = new Vector2(0.0f, 0.0f);
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private readonly Point info_normalX = new Point(0, 0);
+		private Point info_normalX = new Point(0, 0);
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private readonly Point info_normalY = new Point(0, 0);
+		private Point info_normalY = new Point(0, 0);
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private readonly List<Item> info_visited = new List<Item>();
+		private List<Item> info_visited = new List<Item>();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -265,13 +265,13 @@ namespace csBump
 							float t = rect.mY;
 							float w = rect.mWidth;
 							float h = rect.mHeight;
-							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, info_ti, info_normalX, info_normalY))
+							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
 								float ti2 = info_ti.Y;
 								if ((0 < ti1 && ti1 < 1) || (0 < ti2 && ti2 < 1))
 								{
-									Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, float.MinValue, float.MaxValue, info_ti, info_normalX, info_normalY);
+									Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, float.MinValue, float.MaxValue, out info_ti, out info_normalX, out info_normalY);
 									float tii0 = info_ti.X;
 									float tii1 = info_ti.Y;
 									infos.Add(new ItemInfo(item, ti1, ti2, Math.Min(tii0, tii1)));
@@ -310,7 +310,7 @@ namespace csBump
 							float t = rect.mY;
 							float w = rect.mWidth;
 							float h = rect.mHeight;
-							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, info_ti, info_normalX, info_normalY))
+							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
 								float ti2 = info_ti.Y;
@@ -507,7 +507,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Vector2 ToWorld(float cx, float cy, Vector2 result)
 		{
-			Grid.Grid_toWorld(mCellSize, cx, cy, result);
+			Grid.Grid_toWorld(mCellSize, cx, cy, out result);
 			return result;
 		}
 
@@ -520,7 +520,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Vector2 ToCell(float x, float y, Vector2 result)
 		{
-			Grid.Grid_toCell(mCellSize, x, y, result);
+			Grid.Grid_toCell(mCellSize, x, y, out result);
 			return result;
 		}
 
@@ -862,7 +862,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Vector2 query_point = new Vector2(0.0f, 0.0f);
+		private Vector2 query_point = new Vector2(0.0f, 0.0f);
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -873,7 +873,7 @@ namespace csBump
 		public virtual List<Item> QueryPoint(float x, float y, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			ToCell(x, y, query_point);
+			query_point = ToCell(x, y, query_point);
 			float cx = query_point.X;
 			float cy = query_point.Y;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);

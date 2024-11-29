@@ -6,23 +6,23 @@ namespace csBump
 {
 	public class Grid
 	{
-		private readonly Vector2 mGridTraverseC1 = new Vector2(0.0f, 0.0f);
-		private readonly Vector2 mGridTraverseC2 = new Vector2(0.0f, 0.0f);
-		private readonly Vector2 mGridTraverseInitStepX = new Vector2(0.0f, 0.0f);
-		private readonly Vector2 mGridTraverseInitStepY = new Vector2(0.0f, 0.0f);
-		private readonly Vector2 mGridToCellRectCXY = new Vector2(0.0f, 0.0f);
+		private Vector2 mGridTraverseC1 = new Vector2(0.0f, 0.0f);
+		private Vector2 mGridTraverseC2 = new Vector2(0.0f, 0.0f);
+		private Vector2 mGridTraverseInitStepX = new Vector2(0.0f, 0.0f);
+		private Vector2 mGridTraverseInitStepY = new Vector2(0.0f, 0.0f);
+		private Vector2 mGridToCellRectCXY = new Vector2(0.0f, 0.0f);
 
-		public static void Grid_toWorld(float cellSize, float cx, float cy, Vector2 point)
+		public static void Grid_toWorld(float cellSize, float cx, float cy , out Vector2 point)
 		{
 			point = new Vector2((cx - 1) * cellSize,(cy - 1) * cellSize);
 		}
 
-		public static void Grid_toCell(float cellSize, float x, float y, Vector2 point)
+		public static void Grid_toCell(float cellSize, float x, float y, out Vector2 point)
 		{
 			point = new Vector2(MathF.Floor(x / cellSize) + 1, MathF.Floor(y / cellSize) + 1);
 		}
 
-		public static int Grid_traverse_initStep(float cellSize, float ct, float t1, float t2, Vector2 point)
+		public static int Grid_traverse_initStep(float cellSize, float ct, float t1, float t2, out Vector2 point)
 		{
 			float v = t2 - t1;
 			if (v > 0)
@@ -49,14 +49,14 @@ namespace csBump
 
 		public virtual void Grid_traverse(float cellSize, float x1, float y1, float x2, float y2, TraverseCallback f)
 		{
-			Grid_toCell(cellSize, x1, y1, mGridTraverseC1);
+			Grid_toCell(cellSize, x1, y1, out mGridTraverseC1);
 			float cx1 = mGridTraverseC1.X;
 			float cy1 = mGridTraverseC1.Y;
-			Grid_toCell(cellSize, x2, y2, mGridTraverseC2);
+			Grid_toCell(cellSize, x2, y2, out mGridTraverseC2);
 			float cx2 = mGridTraverseC2.X;
 			float cy2 = mGridTraverseC2.Y;
-			int stepX = Grid_traverse_initStep(cellSize, cx1, x1, x2, mGridTraverseInitStepX);
-			int stepY = Grid_traverse_initStep(cellSize, cy1, y1, y2, mGridTraverseInitStepY);
+			int stepX = Grid_traverse_initStep(cellSize, cx1, x1, x2, out mGridTraverseInitStepX);
+			int stepY = Grid_traverse_initStep(cellSize, cy1, y1, y2, out mGridTraverseInitStepY);
 			float dx = mGridTraverseInitStepX.X;
 			float tx = mGridTraverseInitStepX.Y;
 			float dy = mGridTraverseInitStepY.X;
@@ -100,11 +100,11 @@ namespace csBump
 
 		public virtual void Grid_traverseRay(float cellSize, float x1, float y1, float dirX, float dirY, TraverseCallback f)
 		{
-			Grid_toCell(cellSize, x1, y1, mGridTraverseC1);
+			Grid_toCell(cellSize, x1, y1, out mGridTraverseC1);
 			float cx1 = mGridTraverseC1.X;
 			float cy1 = mGridTraverseC1.Y;
-			int stepX = Grid_traverse_initStep(cellSize, cx1, x1, x1 + dirX, mGridTraverseInitStepX);
-			int stepY = Grid_traverse_initStep(cellSize, cy1, y1, y1 + dirY, mGridTraverseInitStepY);
+			int stepX = Grid_traverse_initStep(cellSize, cx1, x1, x1 + dirX, out mGridTraverseInitStepX);
+			int stepY = Grid_traverse_initStep(cellSize, cy1, y1, y1 + dirY, out mGridTraverseInitStepY);
 			float dx = mGridTraverseInitStepX.X;
 			float tx = mGridTraverseInitStepX.Y;
 			float dy = mGridTraverseInitStepY.X;
@@ -138,7 +138,7 @@ namespace csBump
 
 		public virtual Rect Grid_toCellRect(float cellSize, float x, float y, float w, float h, Rect rect)
 		{
-			Grid_toCell(cellSize, x, y, mGridToCellRectCXY);
+			Grid_toCell(cellSize, x, y, out mGridToCellRectCXY);
 			float cx = mGridToCellRectCXY.X;
 			float cy = mGridToCellRectCXY.Y;
 			float cr = MathF.Ceiling((x + w) / cellSize);

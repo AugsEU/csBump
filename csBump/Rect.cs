@@ -35,7 +35,7 @@ namespace csBump
 			mHeight = h;
 		}
 
-		public static void Rect_getNearestCorner(float x, float y, float w, float h, float px, float py, Vector2 result)
+		public static void Rect_getNearestCorner(float x, float y, float w, float h, float px, float py, out Vector2 result)
 		{
 			result = new Vector2(Extra.Nearest(px, x, x + w), Extra.Nearest(py, y, y + h));
 		}
@@ -46,8 +46,12 @@ namespace csBump
 		/// Notice that normals are only guaranteed to be accurate when initially ti1 == float.MinValue, ti2 == float.MaxValue
 		/// </summary>
 		/// <returns>false if the segment never touches the rect</returns>
-		public static bool Rect_getSegmentIntersectionIndices(float x, float y, float w, float h, float x1, float y1, float x2, float y2, float ti1, float ti2, Vector2 ti, Point n1, Point n2)
+		public static bool Rect_getSegmentIntersectionIndices(float x, float y, float w, float h, float x1, float y1, float x2, float y2, float ti1, float ti2, out Vector2 ti, out Point n1, out Point n2)
 		{
+			ti = Vector2.Zero;
+			n1 = Point.Zero;
+			n2 = Point.Zero;
+
 			float dx = x2 - x1;
 			float dy = y2 - y1;
 			int nx = 0, ny = 0;
