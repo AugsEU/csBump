@@ -8,7 +8,7 @@ namespace MGTest
 {
 	internal class MovingRect
 	{
-		const float SPEED = 50.2f;
+		const float SPEED = 100.2f;
 
 		Vector2 mPosition;
 		Vector2 mSize;
@@ -55,7 +55,7 @@ namespace MGTest
 
 			Result result = bumpWorld.Move(mBumpItem, desirePos.X, desirePos.Y, new DefaultFilter());
 
-			Rect rect = bumpWorld.GetRect(mBumpItem);
+			Rect2f rect = bumpWorld.GetRect(mBumpItem);
 			mPosition.X = rect.mX;
 			mPosition.Y = rect.mY;
 		}

@@ -7,6 +7,18 @@ namespace MGTest
 {
 	public class Main : Game
 	{
+		const string TILES = "                              \n" +
+							 "                              \n" +
+							 "  XXX         X X             \n" +
+							 "    X           X             \n" +
+							 "    X  XXX  XX  X             \n" +
+							 "                              \n" +
+							 "                 XXXX         \n" +
+							 "                 X  XXXXX     \n" +
+							 "                 X    XXX     \n" +
+							 "XXXXXXXX         XX   X X     \n" +
+							 "                      XXXXX   \n";
+
 		static Texture2D mBlankTexture;
 
 		private GraphicsDeviceManager mGraphics;
@@ -16,6 +28,7 @@ namespace MGTest
 
 		MovingRect mPlayer;
 		MovingRect mOtherPlayer;
+		TileMap mTileMap;
 
 		public Main()
 		{
@@ -37,6 +50,8 @@ namespace MGTest
 			mOtherPlayer.mDownKey = Keys.Down;
 			mOtherPlayer.mLeftKey = Keys.Left;
 			mOtherPlayer.mRightKey = Keys.Right;
+
+			mTileMap = new TileMap(mWorld, new Point(16, 16), TILES);
 
 			base.Initialize();
 		}
@@ -62,6 +77,8 @@ namespace MGTest
 
 			mPlayer.Draw(mSpriteBatch);
 			mOtherPlayer.Draw(mSpriteBatch);
+
+			mTileMap.Draw(mSpriteBatch, mWorld);
 
 			mSpriteBatch.End();
 
