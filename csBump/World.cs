@@ -261,10 +261,10 @@ namespace csBump
 						if (filter == null || filter.Filter(item, null) != null)
 						{
 							Rect2f rect = rects[item];
-							float l = rect.mX;
-							float t = rect.mY;
-							float w = rect.mWidth;
-							float h = rect.mHeight;
+							float l = rect.X;
+							float t = rect.Y;
+							float w = rect.Width;
+							float h = rect.Height;
 							if (Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
@@ -306,10 +306,10 @@ namespace csBump
 						if (filter == null || filter.Filter(item, null) != null)
 						{
 							Rect2f rect = rects[item];
-							float l = rect.mX;
-							float t = rect.mY;
-							float w = rect.mWidth;
-							float h = rect.mHeight;
+							float l = rect.X;
+							float t = rect.Y;
+							float w = rect.Width;
+							float h = rect.Height;
 							if (Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
@@ -377,7 +377,7 @@ namespace csBump
 			float tw = tr - tl;
 			float th = tb - tt;
 			project_c = mGrid.Grid_toCellRect(mCellSize, tl, tt, tw, th);
-			float cl = project_c.mX, ct = project_c.mY, cw = project_c.mWidth, ch = project_c.mHeight;
+			float cl = project_c.X, ct = project_c.Y, cw = project_c.Width, ch = project_c.Height;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
 			foreach (Item other in dictItemsInCellRect)
 			{
@@ -388,11 +388,11 @@ namespace csBump
 					if (response != null)
 					{
 						Rect2f o = GetRect(other);
-						float ox = o.mX, oy = o.mY, ow = o.mWidth, oh = o.mHeight;
+						float ox = o.X, oy = o.Y, ow = o.Width, oh = o.Height;
 						Collision col = mRectHelper.Rect_detectCollision(x, y, w, h, ox, oy, ow, oh, goalX, goalY);
 						if (col != null)
 						{
-							collisions.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.mX, col.mItemRect.mY, col.mItemRect.mWidth, col.mItemRect.mHeight, col.mOtherRect.mX, col.mOtherRect.mY, col.mOtherRect.mWidth, col.mOtherRect.mHeight, item, other, response);
+							collisions.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, item, other, response);
 						}
 					}
 				}
@@ -553,7 +553,7 @@ namespace csBump
 
 			rects.Add(item, new Rect2f(x, y, w, h));
 			add_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
-			float cl = add_c.mX, ct = add_c.mY, cw = add_c.mWidth, ch = add_c.mHeight;
+			float cl = add_c.X, ct = add_c.Y, cw = add_c.Width, ch = add_c.Height;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
 				for (float cx = cl; cx < cl + cw; cx++)
@@ -583,10 +583,10 @@ namespace csBump
 		public virtual void Remove(Item item)
 		{
 			Rect2f rect = GetRect(item);
-			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
+			float x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
 			rects.Remove(item);
 			remove_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
-			float cl = remove_c.mX, ct = remove_c.mY, cw = remove_c.mWidth, ch = remove_c.mHeight;
+			float cl = remove_c.X, ct = remove_c.Y, cw = remove_c.Width, ch = remove_c.Height;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
 				for (float cx = cl; cx < cl + cw; cx++)
@@ -620,7 +620,7 @@ namespace csBump
 		public virtual void Update(Item item, float x2, float y2)
 		{
 			Rect2f rect = GetRect(item);
-			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
+			float x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
 			Update(item, x2, y2, w, h);
 		}
 
@@ -650,13 +650,13 @@ namespace csBump
 		public virtual void Update(Item item, float x2, float y2, float w2, float h2)
 		{
 			Rect2f rect = GetRect(item);
-			float x1 = rect.mX, y1 = rect.mY, w1 = rect.mWidth, h1 = rect.mHeight;
+			float x1 = rect.X, y1 = rect.Y, w1 = rect.Width, h1 = rect.Height;
 			if (x1 != x2 || y1 != y2 || w1 != w2 || h1 != h2)
 			{
 				Rect2f c1 = mGrid.Grid_toCellRect(mCellSize, x1, y1, w1, h1);
 				Rect2f c2 = mGrid.Grid_toCellRect(mCellSize, x2, y2, w2, h2);
-				float cl1 = c1.mX, ct1 = c1.mY, cw1 = c1.mWidth, ch1 = c1.mHeight;
-				float cl2 = c2.mX, ct2 = c2.mY, cw2 = c2.mWidth, ch2 = c2.mHeight;
+				float cl1 = c1.X, ct1 = c1.Y, cw1 = c1.Width, ch1 = c1.Height;
+				float cl2 = c2.X, ct2 = c2.Y, cw2 = c2.Width, ch2 = c2.Height;
 				if (cl1 != cl2 || ct1 != ct2 || cw1 != cw2 || ch1 != ch2)
 				{
 					float cr1 = cl1 + cw1 - 1, cb1 = ct1 + ch1 - 1;
@@ -737,7 +737,7 @@ namespace csBump
 			visited.Add(item);
 			CollisionFilter visitedFilter = new AnonymousCollisionFilter(this, visited, filter);
 			Rect2f rect = GetRect(item);
-			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
+			float x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
 			Collisions cols = check_cols;
 			cols.Clear();
 			Collisions projectedCols = Project(item, x, y, w, h, goalX, goalY, filter, check_projectedCols);
@@ -745,7 +745,7 @@ namespace csBump
 			while (projectedCols != null && !projectedCols.IsEmpty())
 			{
 				Collision col = projectedCols.Get(0);
-				cols.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.mX, col.mItemRect.mY, col.mItemRect.mWidth, col.mItemRect.mHeight, col.mOtherRect.mX, col.mOtherRect.mY, col.mOtherRect.mWidth, col.mOtherRect.mHeight, col.mItem, col.mOther, col.mType);
+				cols.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, col.mItem, col.mOther, col.mType);
 				visited.Add(col.mOther);
 				IResponse response = col.mType;
 				response.Response(this, col, x, y, w, h, goalX, goalY, visitedFilter, result);
@@ -846,12 +846,12 @@ namespace csBump
 		{
 			items.Clear();
 			query_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
-			float cl = query_c.mX, ct = query_c.mY, cw = query_c.mWidth, ch = query_c.mHeight;
+			float cl = query_c.X, ct = query_c.Y, cw = query_c.Width, ch = query_c.Height;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
 				Rect2f rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_isIntersecting(x, y, w, h, rect.mX, rect.mY, rect.mWidth, rect.mHeight))
+				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_isIntersecting(x, y, w, h, rect.X, rect.Y, rect.Width, rect.Height))
 				{
 					items.Add(item);
 				}
@@ -885,7 +885,7 @@ namespace csBump
 			foreach (Item item in dictItemsInCellRect)
 			{
 				Rect2f rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_containsPoint(rect.mX, rect.mY, rect.mWidth, rect.mHeight, x, y))
+				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_containsPoint(rect.X, rect.Y, rect.Width, rect.Height, x, y))
 				{
 					items.Add(item);
 				}

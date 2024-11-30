@@ -9,30 +9,36 @@ namespace csBump
 	/// </summary>
 	public struct Rect2f
 	{
-		public float mX;
-		public float mY;
+		Vector2 mPosition;
+		Vector2 mSize;
 
-		public float mWidth;
-		public float mHeight;
+		public float X { get { return mPosition.X; } set { mPosition.X = value; } }
+		public float Y { get { return mPosition.Y; } set { mPosition.Y = value; } }
+		public float Width { get { return mSize.X; } set { mSize.X = value; } }
+		public float Height { get { return mSize.Y; } set { mSize.Y = value; } }
+		public Vector2 Position { get { return mPosition; } set { mPosition = value; } }
+		public Vector2 Size { get { return mSize; } set { mSize = value; } }
 
 		public Rect2f()
 		{
+			mPosition = Vector2.Zero;
+			mSize = Vector2.Zero;
 		}
 
 		public Rect2f(float x, float y, float w, float h)
 		{
-			mX = x;
-			mY = y;
-			mWidth = w;
-			mHeight = h;
+			X = x;
+			Y = y;
+			Width = w;
+			Height = h;
 		}
 
 		public void Set(float x, float y, float w, float h)
 		{
-			mX = x;
-			mY = y;
-			mWidth = w;
-			mHeight = h;
+			X = x;
+			Y = y;
+			Width = w;
+			Height = h;
 		}
 
 		public static Vector2 Rect_getNearestCorner(float x, float y, float w, float h, float px, float py)

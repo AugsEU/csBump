@@ -57,7 +57,7 @@
 
 		public virtual void Add(Collision col)
 		{
-			Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.mX, col.mItemRect.mY, col.mItemRect.mWidth, col.mItemRect.mHeight, col.mOtherRect.mX, col.mOtherRect.mY, col.mOtherRect.mWidth, col.mOtherRect.mHeight, col.mItem, col.mOther, col.mType);
+			Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, col.mItem, col.mOther, col.mType);
 		}
 
 		public virtual void Add(bool overlap, float ti, float moveX, float moveY, int normalX, int normalY, float touchX, float touchY, float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, Item item, Item other, IResponse type)

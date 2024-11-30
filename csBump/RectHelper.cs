@@ -24,10 +24,10 @@ namespace csBump
 			float dx = goalX - x1;
 			float dy = goalY - y1;
 			mRectDetectCollisionDiff = Rect2f.Rect_getDiff(x1, y1, w1, h1, x2, y2, w2, h2);
-			float x = mRectDetectCollisionDiff.mX;
-			float y = mRectDetectCollisionDiff.mY;
-			float w = mRectDetectCollisionDiff.mWidth;
-			float h = mRectDetectCollisionDiff.mHeight;
+			float x = mRectDetectCollisionDiff.X;
+			float y = mRectDetectCollisionDiff.Y;
+			float w = mRectDetectCollisionDiff.Width;
+			float h = mRectDetectCollisionDiff.Height;
 			bool overlaps = false;
 			float? ti = null;
 			int nx = 0, ny = 0;
