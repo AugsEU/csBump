@@ -11,23 +11,21 @@ namespace csBump
 	/// </summary>
 	public interface IResponse
 	{
-		Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result);
+		Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result);
 		class Result
 		{
-			public float mGoalX;
-			public float mGoalY;
+			public Vector2 mGoal;
 			public Collisions mProjectedCollisions = new Collisions();
-			public virtual void Set(float goalX, float goalY)
+			public virtual void Set(Vector2 goal)
 			{
-				mGoalX = goalX;
-				mGoalY = goalY;
+				mGoal = goal;
 			}
 		}
 	}
 
 	public class SlideResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
 		{
 			Vector2 tch = collision.mTouch;
 			Vector2 move = collision.mMove;
@@ -36,57 +34,55 @@ namespace csBump
 			{
 				if (collision.mNormal.X == 0)
 				{
-					sx = goalX;
+					sx = goal.X;
 				}
 				else
 				{
-					sy = goalY;
+					sy = goal.Y;
 				}
 			}
 
-			x = tch.X;
-			y = tch.Y;
-			goalX = sx;
-			goalY = sy;
+			rect.Position = tch;
+			goal = new Vector2(sx, sy);
 			result.mProjectedCollisions.Clear();
-			world.Project(collision.mItem, x, y, w, h, goalX, goalY, filter, result.mProjectedCollisions);
-			result.Set(goalX, goalY);
+			world.Project(collision.mItem, rect, goal, filter, result.mProjectedCollisions);
+			result.Set(goal);
 			return result;
 		}
 	}
 
 	public class TouchResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
 		{
 			result.mProjectedCollisions.Clear();
-			result.Set(collision.mTouch.X, collision.mTouch.Y);
+			result.Set(collision.mTouch);
 			return result;
 		}
 	}
 
 	public class CrossResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
 		{
 			result.mProjectedCollisions.Clear();
-			world.Project(collision.mItem, x, y, w, h, goalX, goalY, filter, result.mProjectedCollisions);
-			result.Set(goalX, goalY);
+			world.Project(collision.mItem, rect, goal, filter, result.mProjectedCollisions);
+			result.Set(goal);
 			return result;
 		}
 	}
 
 	public class BounceResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Result result)
+		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
 		{
 			Vector2 tch = collision.mTouch;
 			Vector2 move = collision.mMove;
 			float bx = tch.X, by = tch.Y;
 			if (move.X != 0 || move.Y != 0)
 			{
-				float bnx = goalX - tch.X;
-				float bny = goalY - tch.Y;
+				float bnx = goal.X - tch.X;
+				float bny = goal.Y - tch.Y;
 				if (collision.mNormal.X == 0)
 				{
 					bny = -bny;
@@ -99,13 +95,12 @@ namespace csBump
 				by = tch.Y + bny;
 			}
 
-			x = tch.X;
-			y = tch.Y;
-			goalX = bx;
-			goalY = by;
+			rect.Position = tch;
+			goal.X = bx;
+			goal.Y = by;
 			result.mProjectedCollisions.Clear();
-			world.Project(collision.mItem, x, y, w, h, goalX, goalY, filter, result.mProjectedCollisions);
-			result.Set(goalX, goalY);
+			world.Project(collision.mItem, rect, goal, filter, result.mProjectedCollisions);
+			result.Set(goal);
 			return result;
 		}
 	}

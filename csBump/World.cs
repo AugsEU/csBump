@@ -330,9 +330,9 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		public virtual Collisions Project(Item item, float x, float y, float w, float h, float goalX, float goalY, Collisions collisions)
+		public virtual Collisions Project(Item item, Rect2f rect, Vector2 goal, Collisions collisions)
 		{
-			return Project(item, x, y, w, h, goalX, goalY, new DefaultFilter(), collisions);
+			return Project(item, rect, goal, new DefaultFilter(), collisions);
 		}
 
 		// this is conscious of tunneling
@@ -358,7 +358,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		public virtual Collisions Project(Item item, float x, float y, float w, float h, float goalX, float goalY, CollisionFilter filter, Collisions collisions)
+		public virtual Collisions Project(Item item, Rect2f rect, Vector2 goal, CollisionFilter filter, Collisions collisions)
 		{
 			collisions.Clear();
 			List<Item> visited = project_visited;
@@ -370,10 +370,10 @@ namespace csBump
 
 			/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-			float tl = MathF.Min(goalX, x);
-			float tt = MathF.Min(goalY, y);
-			float tr = MathF.Max(goalX + w, x + w);
-			float tb = MathF.Max(goalY + h, y + h);
+			float tl = MathF.Min(goal.X, rect.X);
+			float tt = MathF.Min(goal.Y, rect.Y);
+			float tr = MathF.Max(goal.X + rect.Width, rect.X + rect.Width);
+			float tb = MathF.Max(goal.Y + rect.Height, rect.Y + rect.Height);
 			float tw = tr - tl;
 			float th = tb - tt;
 			project_c = mGrid.Grid_toCellRect(mCellSize, tl, tt, tw, th);
@@ -387,9 +387,9 @@ namespace csBump
 					IResponse response = filter.Filter(item, other);
 					if (response != null)
 					{
-						Rect2f o = GetRect(other);
-						float ox = o.X, oy = o.Y, ow = o.Width, oh = o.Height;
-						Collision col = mRectHelper.Rect_detectCollision(x, y, w, h, ox, oy, ow, oh, goalX, goalY);
+						Rect2f otherRect = GetRect(other);
+
+						Collision? col = mRectHelper.Rect_detectCollision(rect, otherRect, goal);
 						if (col != null)
 						{
 							collisions.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, item, other, response);
@@ -730,17 +730,16 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual IResponse.Result Check(Item item, float goalX, float goalY, CollisionFilter filter)
+		public virtual IResponse.Result Check(Item item, Vector2 goal, CollisionFilter filter)
 		{
 			List<Item> visited = check_visited;
 			visited.Clear();
 			visited.Add(item);
 			CollisionFilter visitedFilter = new AnonymousCollisionFilter(this, visited, filter);
 			Rect2f rect = GetRect(item);
-			float x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
 			Collisions cols = check_cols;
 			cols.Clear();
-			Collisions projectedCols = Project(item, x, y, w, h, goalX, goalY, filter, check_projectedCols);
+			Collisions projectedCols = Project(item, rect, goal, filter, check_projectedCols);
 			IResponse.Result result = check_result;
 			while (projectedCols != null && !projectedCols.IsEmpty())
 			{
@@ -748,13 +747,13 @@ namespace csBump
 				cols.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, col.mItem, col.mOther, col.mType);
 				visited.Add(col.mOther);
 				IResponse response = col.mType;
-				response.Response(this, col, x, y, w, h, goalX, goalY, visitedFilter, result);
-				goalX = result.mGoalX;
-				goalY = result.mGoalY;
+				response.Response(this, col, rect, goal, visitedFilter, result);
+				goal = result.mGoal;
+
 				projectedCols = result.mProjectedCollisions;
 			}
 
-			result.Set(goalX, goalY);
+			result.Set(goal);
 			result.mProjectedCollisions.Clear();
 			for (int i = 0; i < cols.Size(); i++)
 			{
@@ -800,10 +799,10 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual IResponse.Result Move(Item item, float goalX, float goalY, CollisionFilter filter)
+		public virtual IResponse.Result Move(Item item, Vector2 goal, CollisionFilter filter)
 		{
-			IResponse.Result result = Check(item, goalX, goalY, filter);
-			Update(item, result.mGoalX, result.mGoalY);
+			IResponse.Result result = Check(item, goal, filter);
+			Update(item, result.mGoal.X, result.mGoal.Y);
 			return result;
 		}
 

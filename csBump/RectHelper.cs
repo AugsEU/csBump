@@ -10,14 +10,15 @@ namespace csBump
 	/// </summary>
 	public class RectHelper
 	{
-		private Collision RectDetectCollisionGetSegmentIntersectionIndicesCol = new Collision();
+		// TO DO: Remove this?
+		private Collision mResultCollision = new Collision();
 
-		public virtual Collision? Rect_detectCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, float goalX, float goalY)
+		public virtual Collision? Rect_detectCollision(Rect2f rect1, Rect2f rect2, Vector2 goal)
 		{
-			Collision col = RectDetectCollisionGetSegmentIntersectionIndicesCol;
-			float dx = goalX - x1;
-			float dy = goalY - y1;
-			Rect2f diff = Rect2f.Rect_getDiff(x1, y1, w1, h1, x2, y2, w2, h2);
+			Collision col = mResultCollision;
+			float dx = goal.X - rect1.X;
+			float dy = goal.Y - rect1.Y;
+			Rect2f diff = Rect2f.Rect_getDiff(rect1.X, rect1.Y, rect1.Width, rect1.Height, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 
 			bool overlaps = false;
 			float? ti = null;
@@ -29,8 +30,8 @@ namespace csBump
 				Vector2 nearestCorner = Rect2f.Rect_getNearestCorner(diff.X, diff.Y, diff.Width, diff.Height, 0, 0);
 
 				//area of intersection
-				float wi = MathF.Min(w1, MathF.Abs(nearestCorner.X));
-				float hi = MathF.Min(h1, MathF.Abs(nearestCorner.Y));
+				float wi = MathF.Min(rect1.Width, MathF.Abs(nearestCorner.X));
+				float hi = MathF.Min(rect1.Height, MathF.Abs(nearestCorner.Y));
 				ti = -wi * hi; //ti is the negative area of intersection
 				overlaps = true;
 			}
@@ -75,8 +76,8 @@ namespace csBump
 
 					nx = MathF.Sign(nearestCorner.X);
 					ny = MathF.Sign(nearestCorner.Y);
-					tx = x1 + nearestCorner.X;
-					ty = y1 + nearestCorner.Y;
+					tx = rect1.X + nearestCorner.X;
+					ty = rect1.Y + nearestCorner.Y;
 				}
 				else
 				{
@@ -91,18 +92,18 @@ namespace csBump
 						return null;
 					}
 
-					tx = x1 + dx * ti1;
-					ty = y1 + dy * ti1; // TO DO: Why is this X centric? No Y case?
+					tx = rect1.X + dx * ti1;
+					ty = rect1.Y + dy * ti1; // TO DO: Why is this X centric? No Y case?
 				}
 			}
 			else
 			{
 				//tunnel
-				tx = x1 + dx * ti.Value;
-				ty = y1 + dy * ti.Value;
+				tx = rect1.X + dx * ti.Value;
+				ty = rect1.Y + dy * ti.Value;
 			}
 
-			col.Set(overlaps, ti.Value, dx, dy, nx, ny, tx, ty, x1, y1, w1, h1, x2, y2, w2, h2);
+			col.Set(overlaps, ti.Value, dx, dy, nx, ny, tx, ty, rect1.X, rect1.Y, rect1.Width, rect1.Height, rect2.X, rect2.Y, rect2.Width, rect2.Height);
 			return col;
 		}
 	}
