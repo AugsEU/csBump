@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace MGTest
 {
@@ -87,7 +88,7 @@ namespace MGTest
 
 		public static void DrawRect(SpriteBatch sb, Vector2 pos, Vector2 size, Color color)
 		{
-			Rectangle intRect = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
+			Rectangle intRect = new Rectangle((int)MathF.Round(pos.X), (int)MathF.Round(pos.Y), (int)size.X, (int)size.Y);
 
 			sb.Draw(mBlankTexture, intRect, color);
 		}
