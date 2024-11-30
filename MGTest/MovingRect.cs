@@ -36,24 +36,27 @@ namespace MGTest
 
 			Vector2 desirePos = mPosition;
 			KeyboardState keyState = Keyboard.GetState();
+
+			float effSpeed = keyState.IsKeyDown(Keys.LeftShift) ? SPEED * 400.0f : SPEED;
+
 			if(keyState.IsKeyDown(mUpKey))
 			{
-				desirePos += new Vector2(0.0f, -1.0f) * SPEED * dt;
+				desirePos += new Vector2(0.0f, -1.0f) * effSpeed * dt;
 			}
 			if (keyState.IsKeyDown(mDownKey))
 			{
-				desirePos += new Vector2(0.0f, 1.0f) * SPEED * dt;
+				desirePos += new Vector2(0.0f, 1.0f) * effSpeed * dt;
 			}
 			if (keyState.IsKeyDown(mLeftKey))
 			{
-				desirePos += new Vector2(-1.0f, 0.0f) * SPEED * dt;
+				desirePos += new Vector2(-1.0f, 0.0f) * effSpeed * dt;
 			}
 			if (keyState.IsKeyDown(mRightKey))
 			{
-				desirePos += new Vector2(1.0f, 0.0f) * SPEED * dt;
+				desirePos += new Vector2(1.0f, 0.0f) * effSpeed * dt;
 			}
 
-			Result result = bumpWorld.Move(mBumpItem, desirePos.X, desirePos.Y, new DefaultFilter());
+			Result result = bumpWorld.Move(mBumpItem, desirePos, new DefaultFilter());
 
 			Rect2f rect = bumpWorld.GetRect(mBumpItem);
 			mPosition.X = rect.X;
