@@ -10,55 +10,43 @@ namespace csBump
 	/// </summary>
 	public class RectHelper
 	{
-		private Rect2f mRectDetectCollisionDiff = new Rect2f();
-		private Vector2 mRectDetectCollisionNearestCorner = new Vector2(0.0f, 0.0f);
-		private Vector2 mRectDetectCollisionGetSegmentIntersectionIndicesTI = new Vector2(0.0f, 0.0f);
-		private Point mRectDetectCollisionGetSegmentIntersectionIndicesN1 = new Point(0, 0);
-		private Point mRectDetectCollisionGetSegmentIntersectionIndicesN2 = new Point(0, 0);
 		private Collision RectDetectCollisionGetSegmentIntersectionIndicesCol = new Collision();
-
 
 		public virtual Collision? Rect_detectCollision(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, float goalX, float goalY)
 		{
 			Collision col = RectDetectCollisionGetSegmentIntersectionIndicesCol;
 			float dx = goalX - x1;
 			float dy = goalY - y1;
-			mRectDetectCollisionDiff = Rect2f.Rect_getDiff(x1, y1, w1, h1, x2, y2, w2, h2);
-			float x = mRectDetectCollisionDiff.X;
-			float y = mRectDetectCollisionDiff.Y;
-			float w = mRectDetectCollisionDiff.Width;
-			float h = mRectDetectCollisionDiff.Height;
+			Rect2f diff = Rect2f.Rect_getDiff(x1, y1, w1, h1, x2, y2, w2, h2);
+
 			bool overlaps = false;
 			float? ti = null;
 			int nx = 0, ny = 0;
-			if (Rect2f.Rect_containsPoint(x, y, w, h, 0, 0))
-			{
 
+			if (Rect2f.Rect_containsPoint(diff.X, diff.Y, diff.Width, diff.Height, 0, 0))
+			{
 				//item was intersecting other
-				mRectDetectCollisionNearestCorner = Rect2f.Rect_getNearestCorner(x, y, w, h, 0, 0);
-				float px = mRectDetectCollisionNearestCorner.X;
-				float py = mRectDetectCollisionNearestCorner.Y;
+				Vector2 nearestCorner = Rect2f.Rect_getNearestCorner(diff.X, diff.Y, diff.Width, diff.Height, 0, 0);
 
 				//area of intersection
-				float wi = MathF.Min(w1, MathF.Abs(px));
-				float hi = MathF.Min(h1, MathF.Abs(py));
+				float wi = MathF.Min(w1, MathF.Abs(nearestCorner.X));
+				float hi = MathF.Min(h1, MathF.Abs(nearestCorner.Y));
 				ti = -wi * hi; //ti is the negative area of intersection
 				overlaps = true;
 			}
 			else
 			{
-				bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, float.MinValue, float.MaxValue, out mRectDetectCollisionGetSegmentIntersectionIndicesTI, out mRectDetectCollisionGetSegmentIntersectionIndicesN1, out mRectDetectCollisionGetSegmentIntersectionIndicesN2);
-				float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.X;
-				float ti2 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.Y;
-				int nx1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.X;
-				int ny1 = mRectDetectCollisionGetSegmentIntersectionIndicesN1.Y;
+				Vector2 tiVec;
+				Point intersectionIndicesN1;
+				Point intersectionIndicesN2; // TO DO: Unused?
+				bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(diff.X, diff.Y, diff.Width, diff.Height, 0, 0, dx, dy, float.MinValue, float.MaxValue, out tiVec, out intersectionIndicesN1, out intersectionIndicesN2);
 
 				//item tunnels into other
-				if (intersect && ti1 < 1 && MathF.Abs(ti1 - ti2) >= Extra.DELTA && (0 < ti1 + Extra.DELTA || 0 == ti1 && ti2 > 0))
+				if (intersect && tiVec.X < 1 && MathF.Abs(tiVec.X - tiVec.Y) >= Extra.DELTA && (0 < tiVec.X + Extra.DELTA || 0 == tiVec.X && tiVec.Y > 0))
 				{
-					ti = ti1;
-					nx = nx1;
-					ny = ny1;
+					ti = tiVec.X; // TO DO: Why is this X centric? No Y case?
+					nx = intersectionIndicesN1.X;
+					ny = intersectionIndicesN1.Y;
 					overlaps = false;
 				}
 			}
@@ -74,38 +62,37 @@ namespace csBump
 				if (dx == 0 && dy == 0)
 				{
 					//intersecting and not moving - use minimum displacement vector
-					mRectDetectCollisionNearestCorner = Rect2f.Rect_getNearestCorner(x, y, w, h, 0, 0);
-					float px = mRectDetectCollisionNearestCorner.X;
-					float py = mRectDetectCollisionNearestCorner.Y;
-					if (MathF.Abs(px) < MathF.Abs(py))
+					Vector2 nearestCorner = Rect2f.Rect_getNearestCorner(diff.X, diff.Y, diff.Width, diff.Height, 0, 0);
+
+					if (MathF.Abs(nearestCorner.X) < MathF.Abs(nearestCorner.Y))
 					{
-						py = 0;
+						nearestCorner.Y = 0;
 					}
 					else
 					{
-						px = 0;
+						nearestCorner.X = 0;
 					}
 
-					nx = MathF.Sign(px);
-					ny = MathF.Sign(py);
-					tx = x1 + px;
-					ty = y1 + py;
+					nx = MathF.Sign(nearestCorner.X);
+					ny = MathF.Sign(nearestCorner.Y);
+					tx = x1 + nearestCorner.X;
+					ty = y1 + nearestCorner.Y;
 				}
 				else
 				{
-
 					//intersecting and moving - move in the opposite direction
-					bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(x, y, w, h, 0, 0, dx, dy, -float.MaxValue, 1, out mRectDetectCollisionGetSegmentIntersectionIndicesTI, out mRectDetectCollisionGetSegmentIntersectionIndicesN1, out mRectDetectCollisionGetSegmentIntersectionIndicesN2);
-					float ti1 = mRectDetectCollisionGetSegmentIntersectionIndicesTI.X;
-					nx = mRectDetectCollisionGetSegmentIntersectionIndicesN1.X;
-					ny = mRectDetectCollisionGetSegmentIntersectionIndicesN1.Y;
+					Vector2 tiVec;
+					Point intersectionIndicesN1;
+					Point intersectionIndicesN2; // TO DO: Unused?
+					bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(diff.X, diff.Y, diff.Width, diff.Height, 0, 0, dx, dy, -float.MaxValue, 1, out tiVec, out intersectionIndicesN1, out intersectionIndicesN2);
+					float ti1 = tiVec.X;
 					if (!intersect)
 					{
 						return null;
 					}
 
 					tx = x1 + dx * ti1;
-					ty = y1 + dy * ti1;
+					ty = y1 + dy * ti1; // TO DO: Why is this X centric? No Y case?
 				}
 			}
 			else
