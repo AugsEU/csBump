@@ -27,7 +27,7 @@ namespace csBump
 			if (Rect2f.Rect_containsPoint(diff.X, diff.Y, diff.Width, diff.Height, 0, 0))
 			{
 				//item was intersecting other
-				Vector2 nearestCorner = Rect2f.Rect_getNearestCorner(diff.X, diff.Y, diff.Width, diff.Height, 0, 0);
+				Vector2 nearestCorner = diff.GetNearestCorner(Vector2.Zero);
 
 				//area of intersection
 				float wi = MathF.Min(rect1.Width, MathF.Abs(nearestCorner.X));
@@ -63,7 +63,7 @@ namespace csBump
 				if (dx == 0 && dy == 0)
 				{
 					//intersecting and not moving - use minimum displacement vector
-					Vector2 nearestCorner = Rect2f.Rect_getNearestCorner(diff.X, diff.Y, diff.Width, diff.Height, 0, 0);
+					Vector2 nearestCorner = diff.GetNearestCorner(Vector2.Zero);
 
 					if (MathF.Abs(nearestCorner.X) < MathF.Abs(nearestCorner.Y))
 					{

@@ -41,9 +41,9 @@ namespace csBump
 			Height = h;
 		}
 
-		public static Vector2 Rect_getNearestCorner(float x, float y, float w, float h, float px, float py)
+		public Vector2 GetNearestCorner(Vector2 point)
 		{
-			return new Vector2(Extra.Nearest(px, x, x + w), Extra.Nearest(py, y, y + h));
+			return new Vector2(Extra.Nearest(point.X, X, X + Width), Extra.Nearest(point.Y, Y, Y + Height));
 		}
 
 		/// <summary>
