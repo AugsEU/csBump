@@ -43,7 +43,7 @@ namespace MGTest
 						continue;
 					}
 					Rect2f rect = world.GetRect(mSolidTiles[x, y]);
-					Main.DrawRect(sb, new Vector2(rect.mX, rect.mY), new Vector2(rect.mWidth, rect.mHeight), Color.DarkRed);
+					Main.DrawRect(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), Color.DarkRed);
 				}
 			}
 		}

@@ -56,8 +56,8 @@ namespace MGTest
 			Result result = bumpWorld.Move(mBumpItem, desirePos.X, desirePos.Y, new DefaultFilter());
 
 			Rect2f rect = bumpWorld.GetRect(mBumpItem);
-			mPosition.X = rect.mX;
-			mPosition.Y = rect.mY;
+			mPosition.X = rect.X;
+			mPosition.Y = rect.Y;
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
