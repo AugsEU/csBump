@@ -260,18 +260,18 @@ namespace csBump
 						info_visited.Add(item);
 						if (filter == null || filter.Filter(item, null) != null)
 						{
-							Rect rect = rects[item];
+							Rect2f rect = rects[item];
 							float l = rect.mX;
 							float t = rect.mY;
 							float w = rect.mWidth;
 							float h = rect.mHeight;
-							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, out info_ti, out info_normalX, out info_normalY))
+							if (Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
 								float ti2 = info_ti.Y;
 								if ((0 < ti1 && ti1 < 1) || (0 < ti2 && ti2 < 1))
 								{
-									Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, float.MinValue, float.MaxValue, out info_ti, out info_normalX, out info_normalY);
+									Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, float.MinValue, float.MaxValue, out info_ti, out info_normalX, out info_normalY);
 									float tii0 = info_ti.X;
 									float tii1 = info_ti.Y;
 									infos.Add(new ItemInfo(item, ti1, ti2, Math.Min(tii0, tii1)));
@@ -305,12 +305,12 @@ namespace csBump
 						info_visited.Add(item);
 						if (filter == null || filter.Filter(item, null) != null)
 						{
-							Rect rect = rects[item];
+							Rect2f rect = rects[item];
 							float l = rect.mX;
 							float t = rect.mY;
 							float w = rect.mWidth;
 							float h = rect.mHeight;
-							if (Rect.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, out info_ti, out info_normalX, out info_normalY))
+							if (Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
 								float ti2 = info_ti.Y;
@@ -346,7 +346,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private readonly Rect project_c = new Rect();
+		private Rect2f project_c = new Rect2f();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -376,7 +376,7 @@ namespace csBump
 			float tb = MathF.Max(goalY + h, y + h);
 			float tw = tr - tl;
 			float th = tb - tt;
-			mGrid.Grid_toCellRect(mCellSize, tl, tt, tw, th, project_c);
+			project_c = mGrid.Grid_toCellRect(mCellSize, tl, tt, tw, th);
 			float cl = project_c.mX, ct = project_c.mY, cw = project_c.mWidth, ch = project_c.mHeight;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
 			foreach (Item other in dictItemsInCellRect)
@@ -387,7 +387,7 @@ namespace csBump
 					IResponse response = filter.Filter(item, other);
 					if (response != null)
 					{
-						Rect o = GetRect(other);
+						Rect2f o = GetRect(other);
 						float ox = o.mX, oy = o.mY, ow = o.mWidth, oh = o.mHeight;
 						Collision col = mRectHelper.Rect_detectCollision(x, y, w, h, ox, oy, ow, oh, goalX, goalY);
 						if (col != null)
@@ -413,7 +413,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Dictionary<Item, Rect> rects = new Dictionary<Item, Rect>();
+		private readonly Dictionary<Item, Rect2f> rects = new Dictionary<Item, Rect2f>();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -421,9 +421,14 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Rect GetRect(Item item)
+		public Rect2f GetRect(Item item)
 		{
 			return rects[item];
+		}
+
+		private void SetRect(Item item, ref Rect2f rect)
+		{
+			rects[item] = rect;
 		}
 
 		// this is conscious of tunneling
@@ -433,7 +438,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Dictionary<Item,Rect>.KeyCollection GetItems()
+		public virtual Dictionary<Item,Rect2f>.KeyCollection GetItems()
 		{
 			return rects.Keys;
 		}
@@ -445,7 +450,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Dictionary<Item, Rect>.ValueCollection GetRects()
+		public virtual Dictionary<Item, Rect2f>.ValueCollection GetRects()
 		{
 			return rects.Values;
 		}
@@ -531,7 +536,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Rect add_c = new Rect();
+		private Rect2f add_c = new Rect2f();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -546,8 +551,8 @@ namespace csBump
 				return item;
 			}
 
-			rects.Add(item, new Rect(x, y, w, h));
-			mGrid.Grid_toCellRect(mCellSize, x, y, w, h, add_c);
+			rects.Add(item, new Rect2f(x, y, w, h));
+			add_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
 			float cl = add_c.mX, ct = add_c.mY, cw = add_c.mWidth, ch = add_c.mHeight;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
@@ -567,7 +572,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Rect remove_c = new Rect();
+		private Rect2f remove_c = new Rect2f();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -577,10 +582,10 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual void Remove(Item item)
 		{
-			Rect rect = GetRect(item);
+			Rect2f rect = GetRect(item);
 			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
 			rects.Remove(item);
-			mGrid.Grid_toCellRect(mCellSize, x, y, w, h, remove_c);
+			remove_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
 			float cl = remove_c.mX, ct = remove_c.mY, cw = remove_c.mWidth, ch = remove_c.mHeight;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
@@ -614,7 +619,7 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual void Update(Item item, float x2, float y2)
 		{
-			Rect rect = GetRect(item);
+			Rect2f rect = GetRect(item);
 			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
 			Update(item, x2, y2, w, h);
 		}
@@ -626,7 +631,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Rect update_c1 = new Rect();
+		private readonly Rect2f update_c1 = new Rect2f();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -634,7 +639,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Rect update_c2 = new Rect();
+		private readonly Rect2f update_c2 = new Rect2f();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -644,12 +649,12 @@ namespace csBump
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual void Update(Item item, float x2, float y2, float w2, float h2)
 		{
-			Rect rect = GetRect(item);
+			Rect2f rect = GetRect(item);
 			float x1 = rect.mX, y1 = rect.mY, w1 = rect.mWidth, h1 = rect.mHeight;
 			if (x1 != x2 || y1 != y2 || w1 != w2 || h1 != h2)
 			{
-				Rect c1 = mGrid.Grid_toCellRect(mCellSize, x1, y1, w1, h1, update_c1);
-				Rect c2 = mGrid.Grid_toCellRect(mCellSize, x2, y2, w2, h2, update_c2);
+				Rect2f c1 = mGrid.Grid_toCellRect(mCellSize, x1, y1, w1, h1);
+				Rect2f c2 = mGrid.Grid_toCellRect(mCellSize, x2, y2, w2, h2);
 				float cl1 = c1.mX, ct1 = c1.mY, cw1 = c1.mWidth, ch1 = c1.mHeight;
 				float cl2 = c2.mX, ct2 = c2.mY, cw2 = c2.mWidth, ch2 = c2.mHeight;
 				if (cl1 != cl2 || ct1 != ct2 || cw1 != cw2 || ch1 != ch2)
@@ -682,7 +687,7 @@ namespace csBump
 					}
 				}
 
-				rect.Set(x2, y2, w2, h2);
+				rects[item] = new Rect2f(x2, y2, w2, h2);
 			}
 		}
 
@@ -731,7 +736,7 @@ namespace csBump
 			visited.Clear();
 			visited.Add(item);
 			CollisionFilter visitedFilter = new AnonymousCollisionFilter(this, visited, filter);
-			Rect rect = GetRect(item);
+			Rect2f rect = GetRect(item);
 			float x = rect.mX, y = rect.mY, w = rect.mWidth, h = rect.mHeight;
 			Collisions cols = check_cols;
 			cols.Clear();
@@ -821,7 +826,7 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		private readonly Rect query_c = new Rect();
+		private Rect2f query_c = new Rect2f();
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
@@ -840,13 +845,13 @@ namespace csBump
 		public virtual List<Item> QueryRect(float x, float y, float w, float h, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			mGrid.Grid_toCellRect(mCellSize, x, y, w, h, query_c);
+			query_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
 			float cl = query_c.mX, ct = query_c.mY, cw = query_c.mWidth, ch = query_c.mHeight;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
-				Rect rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect.Rect_isIntersecting(x, y, w, h, rect.mX, rect.mY, rect.mWidth, rect.mHeight))
+				Rect2f rect = rects[item];
+				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_isIntersecting(x, y, w, h, rect.mX, rect.mY, rect.mWidth, rect.mHeight))
 				{
 					items.Add(item);
 				}
@@ -879,8 +884,8 @@ namespace csBump
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
-				Rect rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect.Rect_containsPoint(rect.mX, rect.mY, rect.mWidth, rect.mHeight, x, y))
+				Rect2f rect = rects[item];
+				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_containsPoint(rect.mX, rect.mY, rect.mWidth, rect.mHeight, x, y))
 				{
 					items.Add(item);
 				}

@@ -14,8 +14,8 @@ namespace csBump
 		public Vector2 mMove = new Vector2(0.0f, 0.0f);
 		public Point mNormal = new Point(0, 0);
 		public Vector2 mTouch = new Vector2(0.0f, 0.0f);
-		public Rect mItemRect = new Rect();
-		public Rect mOtherRect = new Rect();
+		public Rect2f mItemRect = new Rect2f();
+		public Rect2f mOtherRect = new Rect2f();
 		public Item? mItem;
 		public Item? mOther;
 		public IResponse? mType;

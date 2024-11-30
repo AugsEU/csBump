@@ -7,7 +7,7 @@ namespace csBump
 	/// <summary>
 	/// Represents a rect in space. With floats.
 	/// </summary>
-	public class Rect
+	public struct Rect2f
 	{
 		public float mX;
 		public float mY;
@@ -15,11 +15,11 @@ namespace csBump
 		public float mWidth;
 		public float mHeight;
 
-		public Rect()
+		public Rect2f()
 		{
 		}
 
-		public Rect(float x, float y, float w, float h)
+		public Rect2f(float x, float y, float w, float h)
 		{
 			mX = x;
 			mY = y;
@@ -27,7 +27,7 @@ namespace csBump
 			mHeight = h;
 		}
 
-		public virtual void Set(float x, float y, float w, float h)
+		public void Set(float x, float y, float w, float h)
 		{
 			mX = x;
 			mY = y;
@@ -135,9 +135,9 @@ namespace csBump
 		/// <summary>
 		/// Calculates the Minkowsky difference between 2 rects, which is another rect
 		/// </summary>
-		public static void Rect_getDiff(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2, Rect result)
+		public static Rect2f Rect_getDiff(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 		{
-			result.Set(x2 - x1 - w1, y2 - y1 - h1, w1 + w2, h1 + h2);
+			return new Rect2f(x2 - x1 - w1, y2 - y1 - h1, w1 + w2, h1 + h2);
 		}
 
 		public static bool Rect_containsPoint(float x, float y, float w, float h, float px, float py)

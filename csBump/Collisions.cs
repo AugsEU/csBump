@@ -224,8 +224,8 @@
 		{
 			if (mTIs[a] == (mTIs[b]))
 			{
-				float ad = Rect.Rect_getSquareDistance(mX1s[a], mY1s[a], mW1s[a], mH1s[a], mX2s[a], mY2s[a], mW2s[a], mH2s[a]);
-				float bd = Rect.Rect_getSquareDistance(mX1s[a], mY1s[a], mW1s[a], mH1s[a], mX2s[b], mY2s[b], mW2s[b], mH2s[b]);
+				float ad = Rect2f.Rect_getSquareDistance(mX1s[a], mY1s[a], mW1s[a], mH1s[a], mX2s[a], mY2s[a], mW2s[a], mH2s[a]);
+				float bd = Rect2f.Rect_getSquareDistance(mX1s[a], mY1s[a], mW1s[a], mH1s[a], mX2s[b], mY2s[b], mW2s[b], mH2s[b]);
 				return ad.CompareTo(bd);
 			}
 

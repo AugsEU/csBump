@@ -136,15 +136,15 @@ namespace csBump
 			}
 		}
 
-		public virtual Rect Grid_toCellRect(float cellSize, float x, float y, float w, float h, Rect rect)
+		public virtual Rect2f Grid_toCellRect(float cellSize, float x, float y, float w, float h)
 		{
 			Grid_toCell(cellSize, x, y, out mGridToCellRectCXY);
 			float cx = mGridToCellRectCXY.X;
 			float cy = mGridToCellRectCXY.Y;
 			float cr = MathF.Ceiling((x + w) / cellSize);
 			float cb = MathF.Ceiling((y + h) / cellSize);
-			rect.Set(cx, cy, cr - cx + 1, cb - cy + 1);
-			return rect;
+
+			return new Rect2f(cx, cy, cr - cx + 1, cb - cy + 1);
 		}
 	}
 }
