@@ -35,7 +35,7 @@ namespace csBump
 			{
 
 				//item was intersecting other
-				Rect2f.Rect_getNearestCorner(x, y, w, h, 0, 0, out mRectDetectCollisionNearestCorner);
+				mRectDetectCollisionNearestCorner = Rect2f.Rect_getNearestCorner(x, y, w, h, 0, 0);
 				float px = mRectDetectCollisionNearestCorner.X;
 				float py = mRectDetectCollisionNearestCorner.Y;
 
@@ -74,7 +74,7 @@ namespace csBump
 				if (dx == 0 && dy == 0)
 				{
 					//intersecting and not moving - use minimum displacement vector
-					Rect2f.Rect_getNearestCorner(x, y, w, h, 0, 0, out mRectDetectCollisionNearestCorner);
+					mRectDetectCollisionNearestCorner = Rect2f.Rect_getNearestCorner(x, y, w, h, 0, 0);
 					float px = mRectDetectCollisionNearestCorner.X;
 					float py = mRectDetectCollisionNearestCorner.Y;
 					if (MathF.Abs(px) < MathF.Abs(py))
