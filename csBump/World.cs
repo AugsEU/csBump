@@ -114,9 +114,7 @@ namespace csBump
 			return result;
 		}
 
-		// this is conscious of tunneling
 		private readonly List<Cell> getCellsTouchedBySegment_visited = new List<Cell>();
-		// this is conscious of tunneling
 		public virtual List<Cell> GetCellsTouchedBySegment(Vector2 pt1, Vector2 pt2, List<Cell> result)
 		{
 			result.Clear();
@@ -161,9 +159,6 @@ namespace csBump
 			}
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
 		public virtual List<Cell> GetCellsTouchedByRay(Vector2 origin, Vector2 dir, List<Cell> result)
 		{
 			result.Clear();
@@ -209,41 +204,12 @@ namespace csBump
 			}
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private List<Cell> info_cells = new List<Cell>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private Vector2 info_ti = new Vector2(0.0f, 0.0f);
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private Point info_normalX = new Point(0, 0);
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private Point info_normalY = new Point(0, 0);
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private List<Item> info_visited = new List<Item>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
+
 		private List<ItemInfo> GetInfoAboutItemsTouchedBySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			info_visited.Clear();
@@ -280,11 +246,6 @@ namespace csBump
 			return infos;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private List<ItemInfo> GetInfoAboutItemsTouchedByRay(Vector2 origin, Vector2 dir, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			info_visited.Clear();
@@ -315,39 +276,16 @@ namespace csBump
 			return infos;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		public virtual Collisions Project(Item item, Rect2f rect, Vector2 goal, Collisions collisions)
 		{
 			return Project(item, rect, goal, new DefaultFilter(), collisions);
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
+
 		private readonly List<Item> project_visited = new List<Item>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private Rect2f project_c = new Rect2f();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
 		private readonly LinkedHashSet<Item> project_dictItemsInCellRect = new LinkedHashSet<Item>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
+
 		public virtual Collisions Project(Item item, Rect2f rect, Vector2 goal, CollisionFilter filter, Collisions collisions)
 		{
 			collisions.Clear();
@@ -359,7 +297,7 @@ namespace csBump
 			}
 
 			/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+			bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 			float tl = MathF.Min(goal.X, rect.X);
 			float tt = MathF.Min(goal.Y, rect.Y);
 			float tr = MathF.Max(goal.X + rect.Width, rect.X + rect.Width);
@@ -396,21 +334,9 @@ namespace csBump
 			return collisions;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		private readonly Dictionary<Item, Rect2f> rects = new Dictionary<Item, Rect2f>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public Rect2f GetRect(Item item)
 		{
 			return rects[item];
@@ -421,117 +347,49 @@ namespace csBump
 			rects[item] = rect;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Dictionary<Item,Rect2f>.KeyCollection GetItems()
 		{
 			return rects.Keys;
 		}
-
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Dictionary<Item, Rect2f>.ValueCollection GetRects()
 		{
 			return rects.Values;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Dictionary<Vector2, Cell>.ValueCollection GetCells()
 		{
 			return mCellMap.Values;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual int CountCells()
 		{
 			return mCellMap.Count;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual bool HasItem(Item item)
 		{
 			return rects.ContainsKey(item);
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual int CountItems()
 		{
 			return rects.Count;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual Vector2 ToWorld(Vector2 point)
 		{
 			return Grid.Grid_toWorld(mCellSize, point);
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public Vector2 ToCell(Vector2 point)
 		{
 			return Grid.Grid_toCell(mCellSize, point); ;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		private Rect2f add_c = new Rect2f();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public virtual Item Add(Item item, float x, float y, float w, float h)
 		{
 			if (rects.ContainsKey(item))
@@ -555,21 +413,8 @@ namespace csBump
 			return item;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private Rect2f remove_c = new Rect2f();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public virtual void Remove(Item item)
 		{
 			Rect2f rect = GetRect(item);
@@ -586,13 +431,6 @@ namespace csBump
 			}
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual void Reset()
 		{
 			rects.Clear();
@@ -600,13 +438,6 @@ namespace csBump
 			mNonEmptyCells.Clear();
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual void Update(Item item, float x2, float y2)
 		{
 			Rect2f rect = GetRect(item);
@@ -614,29 +445,9 @@ namespace csBump
 			Update(item, dest);
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly Rect2f update_c1 = new Rect2f();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly Rect2f update_c2 = new Rect2f();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public void Update(Item item, Rect2f dest)
 		{
 			Rect2f curr = GetRect(item);
@@ -681,45 +492,11 @@ namespace csBump
 			}
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly List<Item> check_visited = new List<Item>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly Collisions check_cols = new Collisions();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly Collisions check_projectedCols = new Collisions();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly IResponse.Result check_result = new IResponse.Result();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public virtual IResponse.Result Check(Item item, Vector2 goal, CollisionFilter filter)
 		{
 			List<Item> visited = check_visited;
@@ -782,13 +559,6 @@ namespace csBump
 			}
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		public virtual IResponse.Result Move(Item item, Vector2 goal, CollisionFilter filter)
 		{
 			IResponse.Result result = Check(item, goal, filter);
@@ -796,41 +566,24 @@ namespace csBump
 			return result;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		public virtual float GetCellSize()
 		{
 			return mCellSize;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		private Rect2f query_c = new Rect2f();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
 		private readonly LinkedHashSet<Item> query_dictItemsInCellRect = new LinkedHashSet<Item>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
+
+
+		/// <summary>
+		/// A collision check of items that intersect the given rectangle.
+		/// </summary>
+		/// <param name="rect">Rect to check</param>
+		/// <param name="filter">Defines what items will be checked for collision.</param>
+		/// <param name="items">An empty list that will be filled with the {@link Item} instances that collide with the rectangle.</param>
 		public virtual List<Item> QueryRect(Rect2f rect, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
@@ -849,21 +602,15 @@ namespace csBump
 			return items;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		private Vector2 query_point = new Vector2(0.0f, 0.0f);
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
+		/// <summary>
+		/// A collision check of items that intersect the given point.
+		/// </summary>
+		/// <param name="point">Point to check</param>
+		/// <param name="filter">Defines what items will be checked for collision.</param>
+		/// <param name="items">An empty list that will be filled with the {@link Item} instances that collide with the point.</param>
 		public virtual List<Item> QueryPoint(Vector2 point, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
@@ -883,21 +630,17 @@ namespace csBump
 			return items;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
 		private readonly List<ItemInfo> query_infos = new List<ItemInfo>();
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
+		/// <summary>
+		/// A collision check of items that intersect the given line segment.
+		/// </summary>
+		/// <param name="pt1">Segment start</param>
+		/// <param name="pt2">Segment end</param>
+		/// <param name="filter">Defines what items will be checked for collision.</param>
+		/// <param name="items">An empty list that will be filled with the {@link Item} instances that intersect the segment.</param>
+		/// <returns></returns>
 		public virtual List<Item> QuerySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
@@ -910,13 +653,15 @@ namespace csBump
 			return items;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+		/// <summary>
+		/// A collision check of items that intersect the given line segment. Returns more details about where the collision
+		/// occurs compared to {@link World#querySegment(float, float, float, float, CollisionFilter, ArrayList)}
+		/// </summary>
+		/// <param name="pt1">Segment start</param>
+		/// <param name="pt2">Segment end</param>
+		/// <param name="filter">Defines what items will be checked for collision.</param>
+		/// <param name="infos">An empty list that will be filled with the collision information.</param>
+		/// <returns></returns>
 		public virtual List<ItemInfo> QuerySegmentWithCoords(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			infos.Clear();
@@ -937,13 +682,15 @@ namespace csBump
 			return infos;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+
+
+		/// <summary>
+		/// A collision check of items that intersect the given ray.
+		/// </summary>
+		/// <param name="origin">The origin of the ray.</param>
+		/// <param name="dir">Vector that defines the angle of the ray.</param>
+		/// <param name="filter">Defines what items will be checked for collision.</param>
+		/// <param name="items">An empty list that will be filled with the {@link Item} instances that intersect the ray</param>
 		public virtual List<Item> QueryRay(Vector2 origin, Vector2 dir, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
@@ -956,13 +703,14 @@ namespace csBump
 			return items;
 		}
 
-		// this is conscious of tunneling
-		// use set
-		//stop if cell coordinates are outside of the world.
-		// use set
-		//stop if cell coordinates are outside of the world.
-		/*This could probably be done with less cells using a polygon raster over the cells instead of a
-    bounding rect of the whole movement. Conditional to building a queryPolygon method*/
+		/// <summary>
+		/// A collision check of items that intersect the given ray. Returns more details about where the collision
+		/// occurs compared to {@link World#queryRay(float, float, float, float, CollisionFilter, ArrayList)}
+		/// </summary>
+		/// <param name="origin">The origin of the ray</param>
+		/// <param name="dir">Vector that defines the angle of the ray.</param>
+		/// <param name="filter">Defines what items will be checked for collision.s</param>
+		/// <param name="infos">An empty list that will be filled with the {@link Item} instances that intersect the ray</param>
 		public virtual List<ItemInfo> QueryRayWithCoords(Vector2 origin, Vector2 dir, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			infos.Clear();
