@@ -1,7 +1,5 @@
 ﻿#if MONOGAME_BUILD
 using Microsoft.Xna.Framework;
-using System.Text.RegularExpressions;
-
 #endif
 
 namespace csBump
