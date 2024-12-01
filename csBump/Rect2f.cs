@@ -1,5 +1,6 @@
 ﻿#if MONOGAME_BUILD
 using Microsoft.Xna.Framework;
+using System.Diagnostics.CodeAnalysis;
 #endif
 
 namespace csBump
@@ -46,20 +47,45 @@ namespace csBump
 			return new Vector2(Extra.Nearest(point.X, X, X + Width), Extra.Nearest(point.Y, Y, Y + Height));
 		}
 
+		public bool ContainsPoint(Vector2 point)
+		{
+			return point.X - X > Extra.DELTA && point.Y - Y > Extra.DELTA && X + Width - point.X > Extra.DELTA && Y + Height - point.Y > Extra.DELTA;
+		}
+
+		public bool IsIntersecting(Rect2f other)
+		{
+			return X < other.X + other.Width && other.X < X + Width && Y < other.Y + other.Height && other.Y < Y + Height;
+		}
+
+		public override bool Equals([NotNullWhen(true)] object? obj)
+		{
+			if(obj is Rect2f otherRect)
+			{
+				return Equals(ref otherRect);
+			}
+
+			return false;
+		}
+
+		public bool Equals(ref Rect2f otherRect)
+		{
+			return otherRect.Position == Position && otherRect.Size == Size;
+		}
+
 		/// <summary>
 		/// This is a generalized implementation of the Liang-Barsky algorithm, which also returns
 		/// the normals of the sides where the segment intersects.
 		/// Notice that normals are only guaranteed to be accurate when initially ti1 == float.MinValue, ti2 == float.MaxValue
 		/// </summary>
 		/// <returns>false if the segment never touches the rect</returns>
-		public static bool Rect_getSegmentIntersectionIndices(float x, float y, float w, float h, float x1, float y1, float x2, float y2, float ti1, float ti2, out Vector2 ti, out Point n1, out Point n2)
+		public static bool Rect_getSegmentIntersectionIndices(Rect2f rect, Vector2 pt1, Vector2 pt2, float ti1, float ti2, out Vector2 ti, out Point n1, out Point n2)
 		{
 			ti = Vector2.Zero;
 			n1 = Point.Zero;
 			n2 = Point.Zero;
 
-			float dx = x2 - x1;
-			float dy = y2 - y1;
+			float dx = pt2.X - pt1.X;
+			float dy = pt2.Y - pt1.Y;
 			int nx = 0, ny = 0;
 			int nx1 = 0, ny1 = 0, nx2 = 0, ny2 = 0;
 			float p, q, r;
@@ -71,25 +97,25 @@ namespace csBump
 						nx = -1;
 						ny = 0;
 						p = -dx;
-						q = x1 - x;
+						q = pt1.X - rect.X;
 						break;
 					case 2: //right
 						nx = 1;
 						ny = 0;
 						p = dx;
-						q = x + w - x1;
+						q = rect.X + rect.Width - pt1.X;
 						break;
 					case 3: //top
 						nx = 0;
 						ny = -1;
 						p = -dy;
-						q = y1 - y;
+						q = pt1.Y - rect.Y;
 						break;
 					default: //bottom
 						nx = 0;
 						ny = 1;
 						p = dy;
-						q = y + h - y1;
+						q = rect.Y + rect.Height - pt1.Y;
 						break;
 				}
 
@@ -141,25 +167,15 @@ namespace csBump
 		/// <summary>
 		/// Calculates the Minkowsky difference between 2 rects, which is another rect
 		/// </summary>
-		public static Rect2f Rect_getDiff(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
+		public static Rect2f GetDiff(Rect2f rect1, Rect2f rect2)
 		{
-			return new Rect2f(x2 - x1 - w1, y2 - y1 - h1, w1 + w2, h1 + h2);
+			return new Rect2f(rect2.X - rect1.X - rect1.Width, rect2.Y - rect1.Y - rect1.Height, rect1.Width + rect2.Width, rect1.Height + rect2.Height);
 		}
 
-		public static bool Rect_containsPoint(float x, float y, float w, float h, float px, float py)
+		public static float GetSquareDistance(Rect2f rect1, Rect2f rect2)
 		{
-			return px - x > Extra.DELTA && py - y > Extra.DELTA && x + w - px > Extra.DELTA && y + h - py > Extra.DELTA;
-		}
-
-		public static bool Rect_isIntersecting(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
-		{
-			return x1 < x2 + w2 && x2 < x1 + w1 && y1 < y2 + h2 && y2 < y1 + h1;
-		}
-
-		public static float Rect_getSquareDistance(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
-		{
-			float dx = x1 - x2 + (w1 - w2) / 2;
-			float dy = y1 - y2 + (h1 - h2) / 2;
+			float dx = rect1.X - rect2.X + (rect1.Width - rect2.Width) / 2;
+			float dy = rect1.Y - rect2.Y + (rect1.Height - rect2.Height) / 2;
 			return dx * dx + dy * dy;
 		}
 	}

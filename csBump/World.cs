@@ -117,15 +117,14 @@ namespace csBump
 		// this is conscious of tunneling
 		private readonly List<Cell> getCellsTouchedBySegment_visited = new List<Cell>();
 		// this is conscious of tunneling
-		public virtual List<Cell> GetCellsTouchedBySegment(float x1, float y1, float x2, float y2, List<Cell> result)
+		public virtual List<Cell> GetCellsTouchedBySegment(Vector2 pt1, Vector2 pt2, List<Cell> result)
 		{
 			result.Clear();
 			getCellsTouchedBySegment_visited.Clear();
 
 			// use set
 			List<Cell> visited = getCellsTouchedBySegment_visited;
-			Vector2 pt = new Vector2(x1, y1);
-			mGrid.Grid_traverse(mCellSize, x1, y1, x2, y2, new AnonymousTraverseCallback(this, pt, visited, result));
+			mGrid.Grid_traverse(mCellSize, pt1, pt2, new AnonymousTraverseCallback(this, pt1, visited, result));
 			return result;
 		}
 
@@ -165,15 +164,14 @@ namespace csBump
 		// this is conscious of tunneling
 		// use set
 		//stop if cell coordinates are outside of the world.
-		public virtual List<Cell> GetCellsTouchedByRay(float originX, float originY, float dirX, float dirY, List<Cell> result)
+		public virtual List<Cell> GetCellsTouchedByRay(Vector2 origin, Vector2 dir, List<Cell> result)
 		{
 			result.Clear();
 			getCellsTouchedBySegment_visited.Clear();
 
 			// use set
 			List<Cell> visited = getCellsTouchedBySegment_visited;
-			Vector2 pt = new Vector2(originX, originY);
-			mGrid.Grid_traverseRay(mCellSize, originX, originY, dirX, dirY, new AnonymousTraverseCallback1(this, pt, visited, result));
+			mGrid.Grid_traverseRay(mCellSize, origin, dir, new AnonymousTraverseCallback1(this, origin, visited, result));
 			return result;
 		}
 
@@ -246,11 +244,11 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private List<ItemInfo> GetInfoAboutItemsTouchedBySegment(float x1, float y1, float x2, float y2, CollisionFilter filter, List<ItemInfo> infos)
+		private List<ItemInfo> GetInfoAboutItemsTouchedBySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			info_visited.Clear();
 			infos.Clear();
-			GetCellsTouchedBySegment(x1, y1, x2, y2, info_cells);
+			GetCellsTouchedBySegment(pt1, pt2, info_cells);
 			foreach (Cell cell in info_cells)
 			{
 				foreach (Item item in cell.mItems)
@@ -261,17 +259,13 @@ namespace csBump
 						if (filter == null || filter.Filter(item, null) != null)
 						{
 							Rect2f rect = rects[item];
-							float l = rect.X;
-							float t = rect.Y;
-							float w = rect.Width;
-							float h = rect.Height;
-							if (Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, 0, 1, out info_ti, out info_normalX, out info_normalY))
+							if (Rect2f.Rect_getSegmentIntersectionIndices(rect, pt1, pt2, 0, 1, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
 								float ti2 = info_ti.Y;
 								if ((0 < ti1 && ti1 < 1) || (0 < ti2 && ti2 < 1))
 								{
-									Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, x1, y1, x2, y2, float.MinValue, float.MaxValue, out info_ti, out info_normalX, out info_normalY);
+									Rect2f.Rect_getSegmentIntersectionIndices(rect, pt1, pt2, float.MinValue, float.MaxValue, out info_ti, out info_normalX, out info_normalY);
 									float tii0 = info_ti.X;
 									float tii1 = info_ti.Y;
 									infos.Add(new ItemInfo(item, ti1, ti2, Math.Min(tii0, tii1)));
@@ -291,11 +285,11 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		// use set
 		//stop if cell coordinates are outside of the world.
-		private List<ItemInfo> GetInfoAboutItemsTouchedByRay(float originX, float originY, float dirX, float dirY, CollisionFilter filter, List<ItemInfo> infos)
+		private List<ItemInfo> GetInfoAboutItemsTouchedByRay(Vector2 origin, Vector2 dir, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			info_visited.Clear();
 			infos.Clear();
-			GetCellsTouchedByRay(originX, originY, dirX, dirY, info_cells);
+			GetCellsTouchedByRay(origin, dir, info_cells);
 			foreach (Cell cell in info_cells)
 			{
 				foreach (Item item in cell.mItems)
@@ -306,11 +300,7 @@ namespace csBump
 						if (filter == null || filter.Filter(item, null) != null)
 						{
 							Rect2f rect = rects[item];
-							float l = rect.X;
-							float t = rect.Y;
-							float w = rect.Width;
-							float h = rect.Height;
-							if (Rect2f.Rect_getSegmentIntersectionIndices(l, t, w, h, originX, originY, originX + dirX, originY + dirY, 0, float.MaxValue, out info_ti, out info_normalX, out info_normalY))
+							if (Rect2f.Rect_getSegmentIntersectionIndices(rect, origin, origin + dir, 0, float.MaxValue, out info_ti, out info_normalX, out info_normalY))
 							{
 								float ti1 = info_ti.X;
 								float ti2 = info_ti.Y;
@@ -376,7 +366,7 @@ namespace csBump
 			float tb = MathF.Max(goal.Y + rect.Height, rect.Y + rect.Height);
 			float tw = tr - tl;
 			float th = tb - tt;
-			project_c = mGrid.Grid_toCellRect(mCellSize, tl, tt, tw, th);
+			project_c = mGrid.Grid_toCellRect(mCellSize, new Rect2f(tl, tt, tw, th));
 			float cl = project_c.X, ct = project_c.Y, cw = project_c.Width, ch = project_c.Height;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
 			foreach (Item other in dictItemsInCellRect)
@@ -510,10 +500,9 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Vector2 ToWorld(float cx, float cy, Vector2 result)
+		public virtual Vector2 ToWorld(Vector2 point)
 		{
-			Grid.Grid_toWorld(mCellSize, cx, cy, out result);
-			return result;
+			return Grid.Grid_toWorld(mCellSize, point);
 		}
 
 		// this is conscious of tunneling
@@ -523,10 +512,9 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual Vector2 ToCell(float x, float y, Vector2 result)
+		public Vector2 ToCell(Vector2 point)
 		{
-			Grid.Grid_toCell(mCellSize, x, y, out result);
-			return result;
+			return Grid.Grid_toCell(mCellSize, point); ;
 		}
 
 		// this is conscious of tunneling
@@ -551,8 +539,10 @@ namespace csBump
 				return item;
 			}
 
-			rects.Add(item, new Rect2f(x, y, w, h));
-			add_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
+			Rect2f newRect = new Rect2f(x, y, w, h);
+
+			rects.Add(item, newRect);
+			add_c = mGrid.Grid_toCellRect(mCellSize, newRect);
 			float cl = add_c.X, ct = add_c.Y, cw = add_c.Width, ch = add_c.Height;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
@@ -583,9 +573,9 @@ namespace csBump
 		public virtual void Remove(Item item)
 		{
 			Rect2f rect = GetRect(item);
-			float x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
+
 			rects.Remove(item);
-			remove_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
+			remove_c = mGrid.Grid_toCellRect(mCellSize, rect);
 			float cl = remove_c.X, ct = remove_c.Y, cw = remove_c.Width, ch = remove_c.Height;
 			for (float cy = ct; cy < ct + ch; cy++)
 			{
@@ -620,8 +610,8 @@ namespace csBump
 		public virtual void Update(Item item, float x2, float y2)
 		{
 			Rect2f rect = GetRect(item);
-			float x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
-			Update(item, x2, y2, w, h);
+			Rect2f dest = new Rect2f(x2, y2, rect.Width, rect.Height);
+			Update(item, dest);
 		}
 
 		// this is conscious of tunneling
@@ -647,14 +637,14 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual void Update(Item item, float x2, float y2, float w2, float h2)
+		public void Update(Item item, Rect2f dest)
 		{
-			Rect2f rect = GetRect(item);
-			float x1 = rect.X, y1 = rect.Y, w1 = rect.Width, h1 = rect.Height;
-			if (x1 != x2 || y1 != y2 || w1 != w2 || h1 != h2)
+			Rect2f curr = GetRect(item);
+
+			if (!curr.Equals(ref dest))
 			{
-				Rect2f c1 = mGrid.Grid_toCellRect(mCellSize, x1, y1, w1, h1);
-				Rect2f c2 = mGrid.Grid_toCellRect(mCellSize, x2, y2, w2, h2);
+				Rect2f c1 = mGrid.Grid_toCellRect(mCellSize, curr);
+				Rect2f c2 = mGrid.Grid_toCellRect(mCellSize, dest);
 				float cl1 = c1.X, ct1 = c1.Y, cw1 = c1.Width, ch1 = c1.Height;
 				float cl2 = c2.X, ct2 = c2.Y, cw2 = c2.Width, ch2 = c2.Height;
 				if (cl1 != cl2 || ct1 != ct2 || cw1 != cw2 || ch1 != ch2)
@@ -687,7 +677,7 @@ namespace csBump
 					}
 				}
 
-				rects[item] = new Rect2f(x2, y2, w2, h2);
+				rects[item] = dest;
 			}
 		}
 
@@ -841,16 +831,16 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual List<Item> QueryRect(float x, float y, float w, float h, CollisionFilter filter, List<Item> items)
+		public virtual List<Item> QueryRect(Rect2f rect, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			query_c = mGrid.Grid_toCellRect(mCellSize, x, y, w, h);
+			query_c = mGrid.Grid_toCellRect(mCellSize, rect);
 			float cl = query_c.X, ct = query_c.Y, cw = query_c.Width, ch = query_c.Height;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
-				Rect2f rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_isIntersecting(x, y, w, h, rect.X, rect.Y, rect.Width, rect.Height))
+				Rect2f otherRect = rects[item];
+				if ((filter == null || filter.Filter(item, null) != null) && rect.IsIntersecting(otherRect))
 				{
 					items.Add(item);
 				}
@@ -874,17 +864,17 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual List<Item> QueryPoint(float x, float y, CollisionFilter filter, List<Item> items)
+		public virtual List<Item> QueryPoint(Vector2 point, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			query_point = ToCell(x, y, query_point);
+			query_point = ToCell(point);
 			float cx = query_point.X;
 			float cy = query_point.Y;
 			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
 			foreach (Item item in dictItemsInCellRect)
 			{
 				Rect2f rect = rects[item];
-				if ((filter == null || filter.Filter(item, null) != null) && Rect2f.Rect_containsPoint(rect.X, rect.Y, rect.Width, rect.Height, x, y))
+				if ((filter == null || filter.Filter(item, null) != null) && rect.ContainsPoint(point))
 				{
 					items.Add(item);
 				}
@@ -908,10 +898,10 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual List<Item> QuerySegment(float x1, float y1, float x2, float y2, CollisionFilter filter, List<Item> items)
+		public virtual List<Item> QuerySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			List<ItemInfo> infos = GetInfoAboutItemsTouchedBySegment(x1, y1, x2, y2, filter, query_infos);
+			List<ItemInfo> infos = GetInfoAboutItemsTouchedBySegment(pt1, pt2, filter, query_infos);
 			foreach (ItemInfo info in infos)
 			{
 				items.Add(info.mItem);
@@ -927,21 +917,21 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual List<ItemInfo> QuerySegmentWithCoords(float x1, float y1, float x2, float y2, CollisionFilter filter, List<ItemInfo> infos)
+		public virtual List<ItemInfo> QuerySegmentWithCoords(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			infos.Clear();
-			infos = GetInfoAboutItemsTouchedBySegment(x1, y1, x2, y2, filter, infos);
-			float dx = x2 - x1;
-			float dy = y2 - y1;
+			infos = GetInfoAboutItemsTouchedBySegment(pt1, pt2, filter, infos);
+			float dx = pt2.X - pt1.X;
+			float dy = pt2.Y - pt1.Y;
 			foreach (ItemInfo info in infos)
 			{
 				float ti1 = info.mTI1;
 				float ti2 = info.mTI2;
 				info.mWeight = 0;
-				info.mX1 = x1 + dx * ti1;
-				info.mY1 = y1 + dy * ti1;
-				info.mX2 = x1 + dx * ti2;
-				info.mY2 = y1 + dy * ti2;
+				info.mX1 = pt1.X + dx * ti1;
+				info.mY1 = pt1.Y + dy * ti1;
+				info.mX2 = pt1.X + dx * ti2;
+				info.mY2 = pt1.Y + dy * ti2;
 			}
 
 			return infos;
@@ -954,10 +944,10 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual List<Item> QueryRay(float originX, float originY, float dirX, float dirY, CollisionFilter filter, List<Item> items)
+		public virtual List<Item> QueryRay(Vector2 origin, Vector2 dir, CollisionFilter filter, List<Item> items)
 		{
 			items.Clear();
-			List<ItemInfo> infos = GetInfoAboutItemsTouchedByRay(originX, originY, dirX, dirY, filter, query_infos);
+			List<ItemInfo> infos = GetInfoAboutItemsTouchedByRay(origin, dir, filter, query_infos);
 			foreach (ItemInfo info in infos)
 			{
 				items.Add(info.mItem);
@@ -973,19 +963,19 @@ namespace csBump
 		//stop if cell coordinates are outside of the world.
 		/*This could probably be done with less cells using a polygon raster over the cells instead of a
     bounding rect of the whole movement. Conditional to building a queryPolygon method*/
-		public virtual List<ItemInfo> QueryRayWithCoords(float originX, float originY, float dirX, float dirY, CollisionFilter filter, List<ItemInfo> infos)
+		public virtual List<ItemInfo> QueryRayWithCoords(Vector2 origin, Vector2 dir, CollisionFilter filter, List<ItemInfo> infos)
 		{
 			infos.Clear();
-			infos = GetInfoAboutItemsTouchedByRay(originX, originY, dirX, dirY, filter, infos);
+			infos = GetInfoAboutItemsTouchedByRay(origin, dir, filter, infos);
 			foreach (ItemInfo info in infos)
 			{
 				float ti1 = info.mTI1;
 				float ti2 = info.mTI2;
 				info.mWeight = 0;
-				info.mX1 = originX + dirX * ti1;
-				info.mY1 = originY + dirY * ti1;
-				info.mX2 = originX + dirX * ti2;
-				info.mY2 = originY + dirY * ti2;
+				info.mX1 = origin.X + dir.X * ti1;
+				info.mY1 = origin.Y + dir.Y * ti1;
+				info.mX2 = origin.X + dir.X * ti2;
+				info.mY2 = origin.Y + dir.Y * ti2;
 			}
 
 			return infos;

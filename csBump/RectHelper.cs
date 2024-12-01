@@ -18,13 +18,13 @@ namespace csBump
 			Collision col = mResultCollision;
 			float dx = goal.X - rect1.X;
 			float dy = goal.Y - rect1.Y;
-			Rect2f diff = Rect2f.Rect_getDiff(rect1.X, rect1.Y, rect1.Width, rect1.Height, rect2.X, rect2.Y, rect2.Width, rect2.Height);
+			Rect2f diff = Rect2f.GetDiff(rect1, rect2);
 
 			bool overlaps = false;
 			float? ti = null;
 			int nx = 0, ny = 0;
 
-			if (Rect2f.Rect_containsPoint(diff.X, diff.Y, diff.Width, diff.Height, 0, 0))
+			if (diff.ContainsPoint(Vector2.Zero))
 			{
 				//item was intersecting other
 				Vector2 nearestCorner = diff.GetNearestCorner(Vector2.Zero);
@@ -40,7 +40,7 @@ namespace csBump
 				Vector2 tiVec;
 				Point intersectionIndicesN1;
 				Point intersectionIndicesN2; // TO DO: Unused?
-				bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(diff.X, diff.Y, diff.Width, diff.Height, 0, 0, dx, dy, float.MinValue, float.MaxValue, out tiVec, out intersectionIndicesN1, out intersectionIndicesN2);
+				bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(diff, Vector2.Zero, new Vector2(dx, dy), float.MinValue, float.MaxValue, out tiVec, out intersectionIndicesN1, out intersectionIndicesN2);
 
 				//item tunnels into other
 				if (intersect && tiVec.X < 1 && MathF.Abs(tiVec.X - tiVec.Y) >= Extra.DELTA && (0 < tiVec.X + Extra.DELTA || 0 == tiVec.X && tiVec.Y > 0))
@@ -85,7 +85,7 @@ namespace csBump
 					Vector2 tiVec;
 					Point intersectionIndicesN1;
 					Point intersectionIndicesN2; // TO DO: Unused?
-					bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(diff.X, diff.Y, diff.Width, diff.Height, 0, 0, dx, dy, -float.MaxValue, 1, out tiVec, out intersectionIndicesN1, out intersectionIndicesN2);
+					bool intersect = Rect2f.Rect_getSegmentIntersectionIndices(diff, Vector2.Zero, new Vector2(dx, dy), -float.MaxValue, 1, out tiVec, out intersectionIndicesN1, out intersectionIndicesN2);
 					float ti1 = tiVec.X;
 					if (!intersect)
 					{
