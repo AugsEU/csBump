@@ -6,12 +6,6 @@ namespace csBump
 {
 	public class Grid
 	{
-		private Vector2 mGridTraverseC1 = new Vector2(0.0f, 0.0f);
-		private Vector2 mGridTraverseC2 = new Vector2(0.0f, 0.0f);
-		private Vector2 mGridTraverseInitStepX = new Vector2(0.0f, 0.0f);
-		private Vector2 mGridTraverseInitStepY = new Vector2(0.0f, 0.0f);
-		private Vector2 mGridToCellRectCXY = new Vector2(0.0f, 0.0f);
-
 		public static Vector2 Grid_toWorld(float cellSize, Vector2 point)
 		{
 			return new Vector2((point.X - 1) * cellSize,(point.Y - 1) * cellSize);
@@ -49,18 +43,21 @@ namespace csBump
 
 		public virtual void Grid_traverse(float cellSize, Vector2 pt1, Vector2 pt2, TraverseCallback f)
 		{
-			mGridTraverseC1 = Grid_toCell(cellSize, pt1);
-			float cx1 = mGridTraverseC1.X;
-			float cy1 = mGridTraverseC1.Y;
-			mGridTraverseC2 = Grid_toCell(cellSize, pt2);
-			float cx2 = mGridTraverseC2.X;
-			float cy2 = mGridTraverseC2.Y;
-			int stepX = Grid_traverse_initStep(cellSize, cx1, pt1.X, pt2.X, out mGridTraverseInitStepX);
-			int stepY = Grid_traverse_initStep(cellSize, cy1, pt1.Y, pt2.Y, out mGridTraverseInitStepY);
-			float dx = mGridTraverseInitStepX.X;
-			float tx = mGridTraverseInitStepX.Y;
-			float dy = mGridTraverseInitStepY.X;
-			float ty = mGridTraverseInitStepY.Y;
+			Vector2 c1 = Grid_toCell(cellSize, pt1);
+			float cx1 = c1.X;
+			float cy1 = c1.Y;
+			Vector2 c2 = Grid_toCell(cellSize, pt2);
+			float cx2 = c2.X;
+			float cy2 = c2.Y;
+
+			Vector2 initStepX, initStepY;
+
+			int stepX = Grid_traverse_initStep(cellSize, cx1, pt1.X, pt2.X, out initStepX);
+			int stepY = Grid_traverse_initStep(cellSize, cy1, pt1.Y, pt2.Y, out initStepY);
+			float dx = initStepX.X;
+			float tx = initStepX.Y;
+			float dy = initStepY.X;
+			float ty = initStepY.Y;
 			float cx = cx1, cy = cy1;
 			f.OnTraverse(cx, cy, stepX, stepY);
 			/*The default implementation had an infinite loop problem when
@@ -100,15 +97,17 @@ namespace csBump
 
 		public virtual void Grid_traverseRay(float cellSize, Vector2 point, Vector2 dir, TraverseCallback f)
 		{
-			mGridTraverseC1 = Grid_toCell(cellSize, point);
-			float cx1 = mGridTraverseC1.X;
-			float cy1 = mGridTraverseC1.Y;
-			int stepX = Grid_traverse_initStep(cellSize, cx1, point.X, point.X + dir.X, out mGridTraverseInitStepX);
-			int stepY = Grid_traverse_initStep(cellSize, cy1, point.Y, point.Y + dir.Y, out mGridTraverseInitStepY);
-			float dx = mGridTraverseInitStepX.X;
-			float tx = mGridTraverseInitStepX.Y;
-			float dy = mGridTraverseInitStepY.X;
-			float ty = mGridTraverseInitStepY.Y;
+			Vector2 c1 = Grid_toCell(cellSize, point);
+			float cx1 = c1.X;
+			float cy1 = c1.Y;
+
+			Vector2 initStepX, initStepY;
+			int stepX = Grid_traverse_initStep(cellSize, cx1, point.X, point.X + dir.X, out initStepX);
+			int stepY = Grid_traverse_initStep(cellSize, cy1, point.Y, point.Y + dir.Y, out initStepY);
+			float dx = initStepX.X;
+			float tx = initStepX.Y;
+			float dy = initStepY.X;
+			float ty = initStepY.Y;
 			float cx = cx1, cy = cy1;
 			f.OnTraverse(cx, cy, stepX, stepY);
 			bool cont = true; //stop iterating if TraverseCallback reports that cell coordinates are outside of the world.
@@ -138,9 +137,9 @@ namespace csBump
 
 		public virtual Rect2f Grid_toCellRect(float cellSize, Rect2f rect)
 		{
-			mGridToCellRectCXY = Grid_toCell(cellSize, rect.Position);
-			float cx = mGridToCellRectCXY.X;
-			float cy = mGridToCellRectCXY.Y;
+			Vector2 toCellRectCXY = Grid_toCell(cellSize, rect.Position);
+			float cx = toCellRectCXY.X;
+			float cy = toCellRectCXY.Y;
 			float cr = MathF.Ceiling((rect.X + rect.Width) / cellSize);
 			float cb = MathF.Ceiling((rect.Y + rect.Height) / cellSize);
 
