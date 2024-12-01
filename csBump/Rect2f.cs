@@ -72,6 +72,17 @@ namespace csBump
 			return otherRect.Position == Position && otherRect.Size == Size;
 		}
 
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = mPosition.GetHashCode();
+				hash = (hash + 137) ^ mSize.GetHashCode();
+
+				return hash;
+			}
+		}
+
 		/// <summary>
 		/// This is a generalized implementation of the Liang-Barsky algorithm, which also returns
 		/// the normals of the sides where the segment intersects.
