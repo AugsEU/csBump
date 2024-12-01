@@ -1,4 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if MONOGAME_BUILD
+using Microsoft.Xna.Framework;
+#endif
+
+using System.Runtime.CompilerServices;
 
 namespace csBump
 {
@@ -12,15 +16,16 @@ namespace csBump
 		/// </summary>
 		protected readonly int mIdentityHash;
 
-		public float mX;
-		public float mY;
+		private Vector2 mPosition;
 		public HashSet<Item> mItems = new HashSet<Item>(11);
+
+		public float X { get { return mPosition.X; } set { mPosition.X = value; } }
+		public float Y { get { return mPosition.Y; } set { mPosition.Y = value; } }
 
 		public Cell()
 		{
 			mIdentityHash = RuntimeHelpers.GetHashCode(this);
-			mX = 0;
-			mY = 0;
+			mPosition = Vector2.Zero;
 		}
 
 		public override bool Equals(object? o)
@@ -42,7 +47,7 @@ namespace csBump
 
 			Cell otherCell = (Cell)o;
 
-			return mX == otherCell.mX && mY == otherCell.mY;
+			return mPosition == otherCell.mPosition;
 		}
 
 		public override int GetHashCode()
