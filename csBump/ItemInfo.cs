@@ -1,4 +1,6 @@
-﻿namespace csBump
+﻿using csBump.util;
+
+namespace csBump
 {
 	public class ItemInfo
 	{
@@ -31,29 +33,23 @@
 			mTI2 = ti2;
 			mWeight = weight;
 		}
+	}
 
-		public static readonly IComparer<ItemInfo> weightComparator = new AnonymousComparator();
-
-		private sealed class AnonymousComparator : IComparer<ItemInfo>
+	class WeightComparer : StatelessComparer<WeightComparer, ItemInfo>, IComparer<ItemInfo>
+	{
+		public int Compare(ItemInfo? o1, ItemInfo? o2)
 		{
-			public AnonymousComparator()
+			if (o1 == null || o2 == null)
 			{
+				throw new NullReferenceException();
 			}
 
-			public int Compare(ItemInfo? o1, ItemInfo? o2)
+			if (o1.mWeight == o2.mWeight)
 			{
-				if (o1 == null || o2 == null)
-				{
-					throw new NullReferenceException();
-				}
-
-				if (o1.mWeight == o2.mWeight)
-				{
-					return 0;
-				}
-
-				return o1.mWeight.CompareTo(o2.mWeight);
+				return 0;
 			}
+
+			return o1.mWeight.CompareTo(o2.mWeight);
 		}
 	}
 }

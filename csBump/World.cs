@@ -242,7 +242,7 @@ namespace csBump
 				}
 			}
 
-			infos.Sort(ItemInfo.weightComparator);
+			infos.Sort(WeightComparer.Comparer);
 			return infos;
 		}
 
@@ -272,7 +272,7 @@ namespace csBump
 				}
 			}
 
-			infos.Sort(ItemInfo.weightComparator);
+			infos.Sort(WeightComparer.Comparer);
 			return infos;
 		}
 
