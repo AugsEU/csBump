@@ -35,9 +35,9 @@ namespace csBump
 		}
 	}
 
-	class WeightComparer : StatelessComparer<WeightComparer, ItemInfo>, IComparer<ItemInfo>
+	static class WeightComparer
 	{
-		public int Compare(ItemInfo? o1, ItemInfo? o2)
+		public static int Compare(ItemInfo? o1, ItemInfo? o2)
 		{
 			if (o1 == null || o2 == null)
 			{
