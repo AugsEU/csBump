@@ -1,7 +1,8 @@
 ﻿#if MONOGAME_BUILD
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
 #endif
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace csBump
 {
