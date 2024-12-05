@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using csBump;
 using static csBump.IResponse;
 
+using TracyWrapper;
+
 namespace MGTest
 {
 	internal class MovingRect
@@ -56,7 +58,9 @@ namespace MGTest
 				desirePos += new Vector2(1.0f, 0.0f) * effSpeed * dt;
 			}
 
+			Profiler.PushProfileZone("Rect Move");
 			Result result = bumpWorld.Move(mBumpItem, desirePos, new DefaultFilter());
+			Profiler.PopProfileZone();
 
 			Rect2f rect = bumpWorld.GetRect(mBumpItem);
 			mPosition.X = rect.X;

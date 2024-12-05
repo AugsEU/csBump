@@ -1,6 +1,7 @@
 ﻿using csBump;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TracyWrapper;
 
 namespace MGTest
 {
@@ -34,7 +35,8 @@ namespace MGTest
 
 		public void Draw(SpriteBatch sb, World world)
 		{
-			for(int x = 0; x < mSolidTiles.GetLength(0); x++)
+			Profiler.PushProfileZone("Draw tilemap");
+			for (int x = 0; x < mSolidTiles.GetLength(0); x++)
 			{
 				for (int y = 0; y < mSolidTiles.GetLength(1); y++)
 				{
@@ -46,6 +48,7 @@ namespace MGTest
 					Main.DrawRect(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height), Color.DarkRed);
 				}
 			}
+			Profiler.PopProfileZone();
 		}
 	}
 }
