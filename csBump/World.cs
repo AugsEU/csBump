@@ -276,7 +276,7 @@ namespace csBump
 			return infos;
 		}
 
-		public virtual Collisions Project(Item item, Rect2f rect, Vector2 goal, Collisions collisions)
+		public virtual List<Collision> Project(Item item, Rect2f rect, Vector2 goal, List<Collision> collisions)
 		{
 			return Project(item, rect, goal, new DefaultFilter(), collisions);
 		}
@@ -286,7 +286,7 @@ namespace csBump
 		private Rect2f project_c = new Rect2f();
 		private readonly LinkedHashSet<Item> project_dictItemsInCellRect = new LinkedHashSet<Item>();
 
-		public virtual Collisions Project(Item item, Rect2f rect, Vector2 goal, CollisionFilter filter, Collisions collisions)
+		public virtual List<Collision> Project(Item item, Rect2f rect, Vector2 goal, CollisionFilter filter, List<Collision> collisions)
 		{
 			collisions.Clear();
 			List<Item> visited = project_visited;
@@ -318,9 +318,13 @@ namespace csBump
 						Rect2f otherRect = GetRect(other);
 
 						Collision? col = mRectHelper.Rect_detectCollision(rect, otherRect, goal);
-						if (col != null)
+						if (col.HasValue)
 						{
-							collisions.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, item, other, response);
+							Collision newCol = col.Value;
+							newCol.mItem = item;
+							newCol.mOther = other;
+							newCol.mType = response;
+							collisions.Add(newCol);
 						}
 					}
 				}
@@ -493,8 +497,8 @@ namespace csBump
 		}
 
 		private readonly List<Item> check_visited = new List<Item>();
-		private readonly Collisions check_cols = new Collisions();
-		private readonly Collisions check_projectedCols = new Collisions();
+		private readonly List<Collision> check_cols = new List<Collision>();
+		private readonly List<Collision> check_projectedCols = new List<Collision>();
 		private readonly IResponse.Result check_result = new IResponse.Result();
 
 		public virtual IResponse.Result Check(Item item, Vector2 goal, CollisionFilter filter)
@@ -504,14 +508,14 @@ namespace csBump
 			visited.Add(item);
 			CollisionFilter visitedFilter = new AnonymousCollisionFilter(this, visited, filter);
 			Rect2f rect = GetRect(item);
-			Collisions cols = check_cols;
+			List<Collision> cols = check_cols;
 			cols.Clear();
-			Collisions projectedCols = Project(item, rect, goal, filter, check_projectedCols);
+			List<Collision> projectedCols = Project(item, rect, goal, filter, check_projectedCols);
 			IResponse.Result result = check_result;
-			while (projectedCols != null && !projectedCols.IsEmpty())
+			while (projectedCols != null && projectedCols.Count > 0)
 			{
-				Collision col = projectedCols.Get(0);
-				cols.Add(col.mOverlaps, col.mTI, col.mMove.X, col.mMove.Y, col.mNormal.X, col.mNormal.Y, col.mTouch.X, col.mTouch.Y, col.mItemRect.X, col.mItemRect.Y, col.mItemRect.Width, col.mItemRect.Height, col.mOtherRect.X, col.mOtherRect.Y, col.mOtherRect.Width, col.mOtherRect.Height, col.mItem, col.mOther, col.mType);
+				Collision col = projectedCols[0];
+				cols.Add(col);
 				visited.Add(col.mOther);
 				IResponse response = col.mType;
 				response.Response(this, col, rect, goal, visitedFilter, result);
@@ -522,9 +526,9 @@ namespace csBump
 
 			result.Set(goal);
 			result.mProjectedCollisions.Clear();
-			for (int i = 0; i < cols.Size(); i++)
+			for (int i = 0; i < cols.Count; i++)
 			{
-				result.mProjectedCollisions.Add(cols.Get(i));
+				result.mProjectedCollisions.Add(cols[i]);
 			}
 
 			return result;

@@ -7,7 +7,7 @@ namespace csBump
 	/// <summary>
 	/// Represents a collision between two items.
 	/// </summary>
-	public class Collision
+	public struct Collision : IComparable<Collision>
 	{
 		public bool mOverlaps;
 		public float mTI;
@@ -24,7 +24,19 @@ namespace csBump
 		{
 		}
 
-		public virtual void Set(bool overlaps, float ti, float moveX, float moveY, int normalX, int normalY, float touchX, float touchY, float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
+		public int CompareTo(Collision other)
+		{
+			if (mTI == other.mTI)
+			{
+				float ad = Rect2f.GetSquareDistance(mItemRect, mOtherRect);
+				float bd = Rect2f.GetSquareDistance(mItemRect, other.mOtherRect);
+				return ad.CompareTo(bd);
+			}
+
+			return mTI.CompareTo(other.mTI);
+		}
+
+		public void Set(bool overlaps, float ti, float moveX, float moveY, int normalX, int normalY, float touchX, float touchY, float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
 		{
 			mOverlaps = overlaps;
 			mTI = ti;

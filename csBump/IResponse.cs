@@ -15,7 +15,7 @@ namespace csBump
 		class Result
 		{
 			public Vector2 mGoal;
-			public Collisions mProjectedCollisions = new Collisions();
+			public List<Collision> mProjectedCollisions = new List<Collision>();
 			public virtual void Set(Vector2 goal)
 			{
 				mGoal = goal;
