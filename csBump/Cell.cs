@@ -9,50 +9,44 @@ namespace csBump
 	/// <summary>
 	/// A cell containing items.
 	/// </summary>
-	public class Cell
+	public class Cell : IEquatable<Cell>
 	{
-		/// <summary>
-		/// This class is compared by identity, like {@link Item}, and it also caches its identityHashCode() result.
-		/// </summary>
-		protected readonly int mIdentityHash;
-
 		private Vector2 mPosition;
-		public HashSet<Item> mItems = new HashSet<Item>(11);
+		public HashSet<Item> mItems = new HashSet<Item>(16);
 
-		public float X { get { return mPosition.X; } set { mPosition.X = value; } }
-		public float Y { get { return mPosition.Y; } set { mPosition.Y = value; } }
-
-		public Cell()
+		public Cell(Vector2 pos)
 		{
-			mIdentityHash = RuntimeHelpers.GetHashCode(this);
-			mPosition = Vector2.Zero;
+			mPosition = pos;
 		}
 
-		public override bool Equals(object? o)
+		public override bool Equals(object? other)
 		{
-			if(ReferenceEquals(this, o))
+			if(ReferenceEquals(this, other))
 			{
 				return true;
 			}
 
-			if(o is null)
+			if(other is not Cell)
 			{
 				return false;
 			}
 
-			if(o is not Cell)
-			{
-				return false;
-			}
-
-			Cell otherCell = (Cell)o;
-
-			return mPosition == otherCell.mPosition;
+			return Equals((Cell)other);
 		}
 
 		public override int GetHashCode()
 		{
-			return mIdentityHash;
+			return base.GetHashCode();
+		}
+
+		public bool Equals(Cell? other)
+		{
+			if (other is null)
+			{
+				return false;
+			}
+
+			return mPosition == other.mPosition;
 		}
 	}
 }

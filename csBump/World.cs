@@ -51,7 +51,7 @@ namespace csBump
 			
 			if (!mCellMap.TryGetValue(pt, out cell))
 			{
-				cell = new Cell();
+				cell = new Cell(pt);
 				mCellMap.Add(pt, cell);
 				if (cx < mCellMinX)
 					mCellMinX = cx;
