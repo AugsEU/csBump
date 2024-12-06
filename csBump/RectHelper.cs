@@ -10,15 +10,11 @@ namespace csBump
 	/// </summary>
 	public class RectHelper
 	{
-		// TO DO: Remove this?
-		private Collision mResultCollision = new Collision();
-
-		public virtual Collision? Rect_detectCollision(Rect2f rect1, Rect2f rect2, Vector2 goal)
+		public virtual Collision? Rect_detectCollision(Item item, Rect2f itemRect, Item other, Rect2f otherRect, Vector2 goal, IResponse response)
 		{
-			Collision col = mResultCollision;
-			float dx = goal.X - rect1.X;
-			float dy = goal.Y - rect1.Y;
-			Rect2f diff = Rect2f.GetDiff(rect1, rect2);
+			float dx = goal.X - itemRect.X;
+			float dy = goal.Y - itemRect.Y;
+			Rect2f diff = Rect2f.GetDiff(itemRect, otherRect);
 
 			bool overlaps = false;
 			float? ti = null;
@@ -30,8 +26,8 @@ namespace csBump
 				Vector2 nearestCorner = diff.GetNearestCorner(Vector2.Zero);
 
 				//area of intersection
-				float wi = MathF.Min(rect1.Width, MathF.Abs(nearestCorner.X));
-				float hi = MathF.Min(rect1.Height, MathF.Abs(nearestCorner.Y));
+				float wi = MathF.Min(itemRect.Width, MathF.Abs(nearestCorner.X));
+				float hi = MathF.Min(itemRect.Height, MathF.Abs(nearestCorner.Y));
 				ti = -wi * hi; //ti is the negative area of intersection
 				overlaps = true;
 			}
@@ -76,8 +72,8 @@ namespace csBump
 
 					nx = MathF.Sign(nearestCorner.X);
 					ny = MathF.Sign(nearestCorner.Y);
-					tx = rect1.X + nearestCorner.X;
-					ty = rect1.Y + nearestCorner.Y;
+					tx = itemRect.X + nearestCorner.X;
+					ty = itemRect.Y + nearestCorner.Y;
 				}
 				else
 				{
@@ -92,19 +88,18 @@ namespace csBump
 						return null;
 					}
 
-					tx = rect1.X + dx * ti1;
-					ty = rect1.Y + dy * ti1; // TO DO: Why is this X centric? No Y case?
+					tx = itemRect.X + dx * ti1;
+					ty = itemRect.Y + dy * ti1; // TO DO: Why is this X centric? No Y case?
 				}
 			}
 			else
 			{
 				//tunnel
-				tx = rect1.X + dx * ti.Value;
-				ty = rect1.Y + dy * ti.Value;
+				tx = itemRect.X + dx * ti.Value;
+				ty = itemRect.Y + dy * ti.Value;
 			}
 
-			col.Set(overlaps, ti.Value, dx, dy, nx, ny, tx, ty, rect1.X, rect1.Y, rect1.Width, rect1.Height, rect2.X, rect2.Y, rect2.Width, rect2.Height);
-			return col;
+			return new Collision(overlaps, ti.Value, new Vector2(dx, dy), new Point(nx, ny), new Vector2(tx, ty), itemRect, otherRect, item, other, response);
 		}
 	}
 }

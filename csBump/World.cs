@@ -278,6 +278,10 @@ namespace csBump
 
 		public virtual List<Collision> Project(Item item, Rect2f rect, Vector2 goal, List<Collision> collisions)
 		{
+			if (item == null)
+			{
+				throw new NullReferenceException();
+			}
 			return Project(item, rect, goal, new DefaultFilter(), collisions);
 		}
 
@@ -288,13 +292,15 @@ namespace csBump
 
 		public virtual List<Collision> Project(Item item, Rect2f rect, Vector2 goal, CollisionFilter filter, List<Collision> collisions)
 		{
+			if(item is null || collisions is null)
+			{
+				throw new NullReferenceException();
+			}
+
 			collisions.Clear();
 			List<Item> visited = project_visited;
 			visited.Clear();
-			if (item != null)
-			{
-				visited.Add(item);
-			}
+			visited.Add(item);
 
 			/*This could probably be done with less cells using a polygon raster over the cells instead of a
 			bounding rect of the whole movement. Conditional to building a queryPolygon method*/
@@ -317,13 +323,10 @@ namespace csBump
 					{
 						Rect2f otherRect = GetRect(other);
 
-						Collision? col = mRectHelper.Rect_detectCollision(rect, otherRect, goal);
+						Collision? col = mRectHelper.Rect_detectCollision(item, rect, other, otherRect, goal, response);
 						if (col.HasValue)
 						{
 							Collision newCol = col.Value;
-							newCol.mItem = item;
-							newCol.mOther = other;
-							newCol.mType = response;
 							collisions.Add(newCol);
 						}
 					}
@@ -499,9 +502,9 @@ namespace csBump
 		private readonly List<Item> check_visited = new List<Item>();
 		private readonly List<Collision> check_cols = new List<Collision>();
 		private readonly List<Collision> check_projectedCols = new List<Collision>();
-		private readonly IResponse.Result check_result = new IResponse.Result();
+		private readonly CollisionResult check_result = new CollisionResult();
 
-		public virtual IResponse.Result Check(Item item, Vector2 goal, CollisionFilter filter)
+		public virtual CollisionResult Check(Item item, Vector2 goal, CollisionFilter filter)
 		{
 			List<Item> visited = check_visited;
 			visited.Clear();
@@ -511,7 +514,7 @@ namespace csBump
 			List<Collision> cols = check_cols;
 			cols.Clear();
 			List<Collision> projectedCols = Project(item, rect, goal, filter, check_projectedCols);
-			IResponse.Result result = check_result;
+			CollisionResult result = check_result;
 			while (projectedCols != null && projectedCols.Count > 0)
 			{
 				Collision col = projectedCols[0];
@@ -563,9 +566,9 @@ namespace csBump
 			}
 		}
 
-		public virtual IResponse.Result Move(Item item, Vector2 goal, CollisionFilter filter)
+		public virtual CollisionResult Move(Item item, Vector2 goal, CollisionFilter filter)
 		{
-			IResponse.Result result = Check(item, goal, filter);
+			CollisionResult result = Check(item, goal, filter);
 			Update(item, result.mGoal.X, result.mGoal.Y);
 			return result;
 		}

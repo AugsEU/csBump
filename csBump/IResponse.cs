@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework;
 #endif
 
-using static csBump.IResponse;
-
 namespace csBump
 {
 	/// <summary>
@@ -11,21 +9,12 @@ namespace csBump
 	/// </summary>
 	public interface IResponse
 	{
-		Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result);
-		class Result
-		{
-			public Vector2 mGoal;
-			public List<Collision> mProjectedCollisions = new List<Collision>();
-			public virtual void Set(Vector2 goal)
-			{
-				mGoal = goal;
-			}
-		}
+		CollisionResult Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, CollisionResult result);
 	}
 
 	public class SlideResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
+		public CollisionResult Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, CollisionResult result)
 		{
 			Vector2 tch = collision.mTouch;
 			Vector2 move = collision.mMove;
@@ -53,7 +42,7 @@ namespace csBump
 
 	public class TouchResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
+		public CollisionResult Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, CollisionResult result)
 		{
 			result.mProjectedCollisions.Clear();
 			result.Set(collision.mTouch);
@@ -63,7 +52,7 @@ namespace csBump
 
 	public class CrossResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
+		public CollisionResult Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, CollisionResult result)
 		{
 			result.mProjectedCollisions.Clear();
 			world.Project(collision.mItem, rect, goal, filter, result.mProjectedCollisions);
@@ -74,7 +63,7 @@ namespace csBump
 
 	public class BounceResponse : IResponse
 	{
-		public Result Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, Result result)
+		public CollisionResult Response(World world, Collision collision, Rect2f rect, Vector2 goal, CollisionFilter filter, CollisionResult result)
 		{
 			Vector2 tch = collision.mTouch;
 			Vector2 move = collision.mMove;

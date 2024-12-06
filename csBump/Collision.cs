@@ -16,12 +16,22 @@ namespace csBump
 		public Vector2 mTouch = new Vector2(0.0f, 0.0f);
 		public Rect2f mItemRect = new Rect2f();
 		public Rect2f mOtherRect = new Rect2f();
-		public Item? mItem;
-		public Item? mOther;
-		public IResponse? mType;
-		
-		public Collision()
+		public Item mItem;
+		public Item mOther;
+		public IResponse mType;
+
+		public Collision(bool overlaps, float ti, Vector2 move, Point normal, Vector2 touch, Rect2f itemRect, Rect2f otherRect, Item item, Item other, IResponse type)
 		{
+			mOverlaps = overlaps;
+			mTI = ti;
+			mMove = move;
+			mNormal = normal;
+			mTouch = touch;
+			mItemRect = itemRect;
+			mOtherRect = otherRect;
+			mItem = item;
+			mOther = other;
+			mType = type;
 		}
 
 		public int CompareTo(Collision other)
@@ -34,17 +44,6 @@ namespace csBump
 			}
 
 			return mTI.CompareTo(other.mTI);
-		}
-
-		public void Set(bool overlaps, float ti, float moveX, float moveY, int normalX, int normalY, float touchX, float touchY, float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2)
-		{
-			mOverlaps = overlaps;
-			mTI = ti;
-			mMove = new Vector2(moveX, moveY);
-			mNormal = new Point(normalX, normalY);
-			mTouch = new Vector2(touchX, touchY);
-			mItemRect.Set(x1, y1, w1, h1);
-			mOtherRect.Set(x2, y2, w2, h2);
 		}
 	}
 }
