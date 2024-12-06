@@ -318,8 +318,8 @@ namespace csBump
 				if (!visited.Contains(other))
 				{
 					visited.Add(other);
-					IResponse response = filter.Filter(item, other);
-					if (response != null)
+					IResponse? response = filter.Filter(item, other);
+					if (response is not null)
 					{
 						Rect2f otherRect = GetRect(other);
 
@@ -550,9 +550,9 @@ namespace csBump
 				this.filter = filter;
 			}
 
-			public IResponse Filter(Item item, Item other)
+			public IResponse? Filter(Item? item, Item? other)
 			{
-				if (visited.Contains(other))
+				if (other is null || visited.Contains(other))
 				{
 					return null;
 				}
