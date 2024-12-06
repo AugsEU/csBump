@@ -37,9 +37,9 @@ namespace MGTest
 			float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			Vector2 desirePos = mBasePos;
-			desirePos += new Vector2((float)sRandom.NextDouble(), (float)sRandom.NextDouble()) * SPEED * dt;
+			desirePos += new Vector2((float)sRandom.NextDouble() * 2.0f - 1.0f, (float)sRandom.NextDouble() * 2.0f - 1.0f) * SPEED * dt;
 
-			Result result = bumpWorld.Move(mBumpItem, desirePos, new DefaultFilter());
+			CollisionResult result = bumpWorld.Move(mBumpItem, desirePos, new DefaultFilter());
 
 			Rect2f rect = bumpWorld.GetRect(mBumpItem);
 			mPosition.X = rect.X;

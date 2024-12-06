@@ -59,7 +59,7 @@ namespace MGTest
 			}
 
 			Profiler.PushProfileZone("Rect Move");
-			Result result = bumpWorld.Move(mBumpItem, desirePos, new DefaultFilter());
+			CollisionResult result = bumpWorld.Move(mBumpItem, desirePos, new DefaultFilter());
 			Profiler.PopProfileZone();
 
 			Rect2f rect = bumpWorld.GetRect(mBumpItem);
