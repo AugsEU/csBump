@@ -19,7 +19,7 @@ namespace MGTest
 		Vector2 mBasePos;
 		Vector2 mSize;
 
-		public Item mBumpItem;
+		public BumpID mBumpItem;
 		public Color mColor = Color.Green;
 
 		public JitterRect(World bumpWorld, Vector2 position, Vector2 size)
@@ -28,7 +28,7 @@ namespace MGTest
 			mBasePos = position;
 			mSize = size;
 
-			mBumpItem = new Item();
+			mBumpItem = new BumpID();
 			bumpWorld.Add(mBumpItem, mPosition.X, mPosition.Y, mSize.X, mSize.Y);
 		}
 

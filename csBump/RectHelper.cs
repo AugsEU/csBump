@@ -10,7 +10,7 @@ namespace csBump
 	/// </summary>
 	public class RectHelper
 	{
-		public virtual Collision? Rect_detectCollision(Item item, Rect2f itemRect, Item other, Rect2f otherRect, Vector2 goal, IResponse response)
+		public virtual Collision? Rect_detectCollision(BumpID item, Rect2f itemRect, BumpID other, Rect2f otherRect, Vector2 goal, IResponse response)
 		{
 			float dx = goal.X - itemRect.X;
 			float dy = goal.Y - itemRect.Y;

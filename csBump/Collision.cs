@@ -16,11 +16,11 @@ namespace csBump
 		public Vector2 mTouch = new Vector2(0.0f, 0.0f);
 		public Rect2f mItemRect = new Rect2f();
 		public Rect2f mOtherRect = new Rect2f();
-		public Item mItem;
-		public Item mOther;
+		public BumpID mItem;
+		public BumpID mOther;
 		public IResponse mType;
 
-		public Collision(bool overlaps, float ti, Vector2 move, Point normal, Vector2 touch, Rect2f itemRect, Rect2f otherRect, Item item, Item other, IResponse type)
+		public Collision(bool overlaps, float ti, Vector2 move, Point normal, Vector2 touch, Rect2f itemRect, Rect2f otherRect, BumpID item, BumpID other, IResponse type)
 		{
 			mOverlaps = overlaps;
 			mTI = ti;

@@ -5,12 +5,12 @@
 	/// </summary>
 	public interface CollisionFilter
 	{
-		public IResponse? Filter(Item? item, Item? other);
+		public IResponse? Filter(BumpID? item, BumpID? other);
 	}
 
 	public class DefaultFilter : CollisionFilter
 	{
-		public IResponse? Filter(Item? item, Item? other)
+		public IResponse? Filter(BumpID? item, BumpID? other)
 		{
 			return new SlideResponse();
 		}

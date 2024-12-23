@@ -4,7 +4,7 @@ namespace csBump
 {
 	public class ItemInfo
 	{
-		public Item mItem;
+		public BumpID mItem;
 
 		/// <summary>
 		/// The x coordinate where the line segment intersects the {@link Rect} of the {@link Item}.
@@ -26,7 +26,7 @@ namespace csBump
 		public float mTI2;
 		public float mWeight;
 
-		public ItemInfo(Item item, float ti1, float ti2, float weight)
+		public ItemInfo(BumpID item, float ti1, float ti2, float weight)
 		{
 			mItem = item;
 			mTI1 = ti1;

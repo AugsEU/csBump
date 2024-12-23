@@ -8,7 +8,7 @@ namespace MGTest
 	internal class TileMap
 	{
 		Point mTileSize;
-		Item[,] mSolidTiles;
+		BumpID[,] mSolidTiles;
 
 		public TileMap(World world, Point tileSize, string tiles)
 		{
@@ -16,7 +16,7 @@ namespace MGTest
 
 			string[] lines = tiles.Split('\n');
 
-			mSolidTiles = new Item[lines[0].Length, lines.Length];
+			mSolidTiles = new BumpID[lines[0].Length, lines.Length];
 
 			for(int y = 0; y < lines.Length; y++)
 			{
@@ -26,7 +26,7 @@ namespace MGTest
 					bool isSolid = line[x] != ' ';
 					if (isSolid)
 					{
-						mSolidTiles[x, y] = new Item();
+						mSolidTiles[x, y] = new BumpID();
 						world.Add(mSolidTiles[x, y], x * tileSize.X, y * tileSize.Y, tileSize.X, tileSize.Y);
 					}
 				}

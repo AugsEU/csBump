@@ -44,7 +44,7 @@ namespace csBump
 			return mTileMode;
 		}
 
-		private void AddItemToCell(Item item, float cx, float cy)
+		private void AddItemToCell(BumpID item, float cx, float cy)
 		{
 			Vector2 pt = new Vector2(cx, cy);
 			Cell? cell = null;
@@ -67,7 +67,7 @@ namespace csBump
 			cell.mItems.Add(item);
 		}
 
-		private bool RemoveItemFromCell(Item item, float cx, float cy)
+		private bool RemoveItemFromCell(BumpID item, float cx, float cy)
 		{
 			Vector2 pt = new Vector2(cx, cy);
 			Cell cell = mCellMap[pt];
@@ -89,7 +89,7 @@ namespace csBump
 			return true;
 		}
 
-		private LinkedHashSet<Item> GetDictItemsInCellRect(float cl, float ct, float cw, float ch, LinkedHashSet<Item> result)
+		private LinkedHashSet<BumpID> GetDictItemsInCellRect(float cl, float ct, float cw, float ch, LinkedHashSet<BumpID> result)
 		{
 			result.Clear();
 			Vector2 pt = new Vector2(cl, ct);
@@ -101,7 +101,7 @@ namespace csBump
 					if (mCellMap.TryGetValue(pt, out cell) && !(cell.mItems.Count == 0))
 					{
 						// this is conscious of tunneling
-						foreach(Item item in cell.mItems)
+						foreach(BumpID item in cell.mItems)
 						{
 							result.Add(item);
 						}
@@ -208,7 +208,7 @@ namespace csBump
 		private Vector2 info_ti = new Vector2(0.0f, 0.0f);
 		private Point info_normalX = new Point(0, 0);
 		private Point info_normalY = new Point(0, 0);
-		private List<Item> info_visited = new List<Item>();
+		private List<BumpID> info_visited = new List<BumpID>();
 
 		private List<ItemInfo> GetInfoAboutItemsTouchedBySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<ItemInfo> infos)
 		{
@@ -217,7 +217,7 @@ namespace csBump
 			GetCellsTouchedBySegment(pt1, pt2, info_cells);
 			foreach (Cell cell in info_cells)
 			{
-				foreach (Item item in cell.mItems)
+				foreach (BumpID item in cell.mItems)
 				{
 					if (!info_visited.Contains(item))
 					{
@@ -253,7 +253,7 @@ namespace csBump
 			GetCellsTouchedByRay(origin, dir, info_cells);
 			foreach (Cell cell in info_cells)
 			{
-				foreach (Item item in cell.mItems)
+				foreach (BumpID item in cell.mItems)
 				{
 					if (!info_visited.Contains(item))
 					{
@@ -276,7 +276,7 @@ namespace csBump
 			return infos;
 		}
 
-		public virtual List<Collision> Project(Item item, Rect2f rect, Vector2 goal, List<Collision> collisions)
+		public virtual List<Collision> Project(BumpID item, Rect2f rect, Vector2 goal, List<Collision> collisions)
 		{
 			if (item == null)
 			{
@@ -286,11 +286,11 @@ namespace csBump
 		}
 
 
-		private readonly List<Item> project_visited = new List<Item>();
+		private readonly List<BumpID> project_visited = new List<BumpID>();
 		private Rect2f project_c = new Rect2f();
-		private readonly LinkedHashSet<Item> project_dictItemsInCellRect = new LinkedHashSet<Item>();
+		private readonly LinkedHashSet<BumpID> project_dictItemsInCellRect = new LinkedHashSet<BumpID>();
 
-		public virtual List<Collision> Project(Item item, Rect2f rect, Vector2 goal, CollisionFilter filter, List<Collision> collisions)
+		public virtual List<Collision> Project(BumpID item, Rect2f rect, Vector2 goal, CollisionFilter filter, List<Collision> collisions)
 		{
 			if(item is null || collisions is null)
 			{
@@ -298,7 +298,7 @@ namespace csBump
 			}
 
 			collisions.Clear();
-			List<Item> visited = project_visited;
+			List<BumpID> visited = project_visited;
 			visited.Clear();
 			visited.Add(item);
 
@@ -312,8 +312,8 @@ namespace csBump
 			float th = tb - tt;
 			project_c = mGrid.Grid_toCellRect(mCellSize, new Rect2f(tl, tt, tw, th));
 			float cl = project_c.X, ct = project_c.Y, cw = project_c.Width, ch = project_c.Height;
-			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
-			foreach (Item other in dictItemsInCellRect)
+			LinkedHashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
+			foreach (BumpID other in dictItemsInCellRect)
 			{
 				if (!visited.Contains(other))
 				{
@@ -342,23 +342,23 @@ namespace csBump
 		}
 
 
-		private readonly Dictionary<Item, Rect2f> rects = new Dictionary<Item, Rect2f>();
+		private readonly Dictionary<BumpID, Rect2f> rects = new Dictionary<BumpID, Rect2f>();
 
-		public Rect2f GetRect(Item item)
+		public Rect2f GetRect(BumpID item)
 		{
 			return rects[item];
 		}
 
-		private void SetRect(Item item, ref Rect2f rect)
+		private void SetRect(BumpID item, ref Rect2f rect)
 		{
 			rects[item] = rect;
 		}
 
-		public virtual Dictionary<Item,Rect2f>.KeyCollection GetItems()
+		public virtual Dictionary<BumpID,Rect2f>.KeyCollection GetItems()
 		{
 			return rects.Keys;
 		}
-		public virtual Dictionary<Item, Rect2f>.ValueCollection GetRects()
+		public virtual Dictionary<BumpID, Rect2f>.ValueCollection GetRects()
 		{
 			return rects.Values;
 		}
@@ -373,7 +373,7 @@ namespace csBump
 			return mCellMap.Count;
 		}
 
-		public virtual bool HasItem(Item item)
+		public virtual bool HasItem(BumpID item)
 		{
 			return rects.ContainsKey(item);
 		}
@@ -397,7 +397,7 @@ namespace csBump
 
 		private Rect2f add_c = new Rect2f();
 
-		public virtual Item Add(Item item, float x, float y, float w, float h)
+		public virtual BumpID Add(BumpID item, float x, float y, float w, float h)
 		{
 			if (rects.ContainsKey(item))
 			{
@@ -422,7 +422,7 @@ namespace csBump
 
 		private Rect2f remove_c = new Rect2f();
 
-		public virtual void Remove(Item item)
+		public virtual void Remove(BumpID item)
 		{
 			Rect2f rect = GetRect(item);
 
@@ -445,7 +445,7 @@ namespace csBump
 			mNonEmptyCells.Clear();
 		}
 
-		public virtual void Update(Item item, float x2, float y2)
+		public virtual void Update(BumpID item, float x2, float y2)
 		{
 			Rect2f rect = GetRect(item);
 			Rect2f dest = new Rect2f(x2, y2, rect.Width, rect.Height);
@@ -455,7 +455,7 @@ namespace csBump
 		private readonly Rect2f update_c1 = new Rect2f();
 		private readonly Rect2f update_c2 = new Rect2f();
 
-		public void Update(Item item, Rect2f dest)
+		public void Update(BumpID item, Rect2f dest)
 		{
 			Rect2f curr = GetRect(item);
 
@@ -499,14 +499,14 @@ namespace csBump
 			}
 		}
 
-		private readonly List<Item> check_visited = new List<Item>();
+		private readonly List<BumpID> check_visited = new List<BumpID>();
 		private readonly List<Collision> check_cols = new List<Collision>();
 		private readonly List<Collision> check_projectedCols = new List<Collision>();
 		private readonly CollisionResult check_result = new CollisionResult();
 
-		public virtual CollisionResult Check(Item item, Vector2 goal, CollisionFilter filter)
+		public virtual CollisionResult Check(BumpID item, Vector2 goal, CollisionFilter filter)
 		{
-			List<Item> visited = check_visited;
+			List<BumpID> visited = check_visited;
 			visited.Clear();
 			visited.Add(item);
 			CollisionFilter visitedFilter = new AnonymousCollisionFilter(this, visited, filter);
@@ -540,17 +540,17 @@ namespace csBump
 		private sealed class AnonymousCollisionFilter : CollisionFilter
 		{
 			private readonly World parent;
-			List<Item> visited;
+			List<BumpID> visited;
 			CollisionFilter? filter;
 
-			public AnonymousCollisionFilter(World parent, List<Item> visited, CollisionFilter? filter)
+			public AnonymousCollisionFilter(World parent, List<BumpID> visited, CollisionFilter? filter)
 			{
 				this.parent = parent;
 				this.visited = visited;
 				this.filter = filter;
 			}
 
-			public IResponse? Filter(Item? item, Item? other)
+			public IResponse? Filter(BumpID? item, BumpID? other)
 			{
 				if (other is null || visited.Contains(other))
 				{
@@ -566,7 +566,7 @@ namespace csBump
 			}
 		}
 
-		public virtual CollisionResult Move(Item item, Vector2 goal, CollisionFilter filter)
+		public virtual CollisionResult Move(BumpID item, Vector2 goal, CollisionFilter filter)
 		{
 			CollisionResult result = Check(item, goal, filter);
 			Update(item, result.mGoal.X, result.mGoal.Y);
@@ -581,7 +581,7 @@ namespace csBump
 
 
 		private Rect2f query_c = new Rect2f();
-		private readonly LinkedHashSet<Item> query_dictItemsInCellRect = new LinkedHashSet<Item>();
+		private readonly LinkedHashSet<BumpID> query_dictItemsInCellRect = new LinkedHashSet<BumpID>();
 
 
 
@@ -591,13 +591,13 @@ namespace csBump
 		/// <param name="rect">Rect to check</param>
 		/// <param name="filter">Defines what items will be checked for collision.</param>
 		/// <param name="items">An empty list that will be filled with the {@link Item} instances that collide with the rectangle.</param>
-		public virtual List<Item> QueryRect(Rect2f rect, CollisionFilter filter, List<Item> items)
+		public virtual List<BumpID> QueryRect(Rect2f rect, CollisionFilter filter, List<BumpID> items)
 		{
 			items.Clear();
 			query_c = mGrid.Grid_toCellRect(mCellSize, rect);
 			float cl = query_c.X, ct = query_c.Y, cw = query_c.Width, ch = query_c.Height;
-			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
-			foreach (Item item in dictItemsInCellRect)
+			LinkedHashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
+			foreach (BumpID item in dictItemsInCellRect)
 			{
 				Rect2f otherRect = rects[item];
 				if ((filter == null || filter.Filter(item, null) != null) && rect.IsIntersecting(otherRect))
@@ -618,14 +618,14 @@ namespace csBump
 		/// <param name="point">Point to check</param>
 		/// <param name="filter">Defines what items will be checked for collision.</param>
 		/// <param name="items">An empty list that will be filled with the {@link Item} instances that collide with the point.</param>
-		public virtual List<Item> QueryPoint(Vector2 point, CollisionFilter filter, List<Item> items)
+		public virtual List<BumpID> QueryPoint(Vector2 point, CollisionFilter filter, List<BumpID> items)
 		{
 			items.Clear();
 			query_point = ToCell(point);
 			float cx = query_point.X;
 			float cy = query_point.Y;
-			LinkedHashSet<Item> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
-			foreach (Item item in dictItemsInCellRect)
+			LinkedHashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
+			foreach (BumpID item in dictItemsInCellRect)
 			{
 				Rect2f rect = rects[item];
 				if ((filter == null || filter.Filter(item, null) != null) && rect.ContainsPoint(point))
@@ -648,7 +648,7 @@ namespace csBump
 		/// <param name="filter">Defines what items will be checked for collision.</param>
 		/// <param name="items">An empty list that will be filled with the {@link Item} instances that intersect the segment.</param>
 		/// <returns></returns>
-		public virtual List<Item> QuerySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<Item> items)
+		public virtual List<BumpID> QuerySegment(Vector2 pt1, Vector2 pt2, CollisionFilter filter, List<BumpID> items)
 		{
 			items.Clear();
 			List<ItemInfo> infos = GetInfoAboutItemsTouchedBySegment(pt1, pt2, filter, query_infos);
@@ -698,7 +698,7 @@ namespace csBump
 		/// <param name="dir">Vector that defines the angle of the ray.</param>
 		/// <param name="filter">Defines what items will be checked for collision.</param>
 		/// <param name="items">An empty list that will be filled with the {@link Item} instances that intersect the ray</param>
-		public virtual List<Item> QueryRay(Vector2 origin, Vector2 dir, CollisionFilter filter, List<Item> items)
+		public virtual List<BumpID> QueryRay(Vector2 origin, Vector2 dir, CollisionFilter filter, List<BumpID> items)
 		{
 			items.Clear();
 			List<ItemInfo> infos = GetInfoAboutItemsTouchedByRay(origin, dir, filter, query_infos);

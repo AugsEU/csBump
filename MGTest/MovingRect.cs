@@ -15,7 +15,7 @@ namespace MGTest
 		Vector2 mPosition;
 		Vector2 mSize;
 
-		public Item mBumpItem;
+		public BumpID mBumpItem;
 		public Color mColor = Color.Gray;
 
 		public Keys mUpKey = Keys.W;
@@ -28,7 +28,7 @@ namespace MGTest
 			mPosition = position;
 			mSize = size;
 
-			mBumpItem = new Item();
+			mBumpItem = new BumpID();
 			bumpWorld.Add(mBumpItem, mPosition.X, mPosition.Y, mSize.X, mSize.Y);
 		}
 

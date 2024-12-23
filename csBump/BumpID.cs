@@ -2,11 +2,11 @@
 
 namespace csBump
 {
-	public class Item
+	public class BumpID
 	{
 		protected readonly int mIdentityHash;
 
-		public Item()
+		public BumpID()
 		{
 			mIdentityHash = RuntimeHelpers.GetHashCode(this);
 		}

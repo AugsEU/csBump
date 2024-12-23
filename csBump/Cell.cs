@@ -12,7 +12,7 @@ namespace csBump
 	public class Cell : IEquatable<Cell>
 	{
 		private Vector2 mPosition;
-		public HashSet<Item> mItems = new HashSet<Item>(16);
+		public HashSet<BumpID> mItems = new HashSet<BumpID>(16);
 
 		public Cell(Vector2 pos)
 		{
