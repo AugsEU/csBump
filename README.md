@@ -44,3 +44,7 @@ Rect2f rect = bumpWorld.GetRect(mBumpItem);
 mPosition.X = rect.X;
 mPosition.Y = rect.Y;
 ```
+
+### MonoGame sample project.
+
+Look in the MGTest folder to see an example of a monogame project, containing two moving chracters, and a simple tilemap.
