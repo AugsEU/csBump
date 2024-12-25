@@ -1,6 +1,4 @@
-﻿using csBump.util;
-
-namespace csBump
+﻿namespace csBump
 {
 	public class ItemInfo
 	{

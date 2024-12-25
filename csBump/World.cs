@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework;
 #endif
 
-using csBump.util;
-
 namespace csBump
 {
 	/// <summary>
@@ -89,7 +87,7 @@ namespace csBump
 			return true;
 		}
 
-		private LinkedHashSet<BumpID> GetDictItemsInCellRect(float cl, float ct, float cw, float ch, LinkedHashSet<BumpID> result)
+		private HashSet<BumpID> GetDictItemsInCellRect(float cl, float ct, float cw, float ch, HashSet<BumpID> result)
 		{
 			result.Clear();
 			Vector2 pt = new Vector2(cl, ct);
@@ -288,7 +286,7 @@ namespace csBump
 
 		private readonly List<BumpID> project_visited = new List<BumpID>();
 		private Rect2f project_c = new Rect2f();
-		private readonly LinkedHashSet<BumpID> project_dictItemsInCellRect = new LinkedHashSet<BumpID>();
+		private readonly HashSet<BumpID> project_dictItemsInCellRect = new HashSet<BumpID>();
 
 		public virtual List<Collision> Project(BumpID item, Rect2f rect, Vector2 goal, CollisionFilter filter, List<Collision> collisions)
 		{
@@ -312,7 +310,7 @@ namespace csBump
 			float th = tb - tt;
 			project_c = mGrid.Grid_toCellRect(mCellSize, new Rect2f(tl, tt, tw, th));
 			float cl = project_c.X, ct = project_c.Y, cw = project_c.Width, ch = project_c.Height;
-			LinkedHashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
+			HashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, project_dictItemsInCellRect);
 			foreach (BumpID other in dictItemsInCellRect)
 			{
 				if (!visited.Contains(other))
@@ -581,7 +579,7 @@ namespace csBump
 
 
 		private Rect2f query_c = new Rect2f();
-		private readonly LinkedHashSet<BumpID> query_dictItemsInCellRect = new LinkedHashSet<BumpID>();
+		private readonly HashSet<BumpID> query_dictItemsInCellRect = new HashSet<BumpID>();
 
 
 
@@ -596,7 +594,7 @@ namespace csBump
 			items.Clear();
 			query_c = mGrid.Grid_toCellRect(mCellSize, rect);
 			float cl = query_c.X, ct = query_c.Y, cw = query_c.Width, ch = query_c.Height;
-			LinkedHashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
+			HashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cl, ct, cw, ch, query_dictItemsInCellRect);
 			foreach (BumpID item in dictItemsInCellRect)
 			{
 				Rect2f otherRect = rects[item];
@@ -624,7 +622,7 @@ namespace csBump
 			query_point = ToCell(point);
 			float cx = query_point.X;
 			float cy = query_point.Y;
-			LinkedHashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
+			HashSet<BumpID> dictItemsInCellRect = GetDictItemsInCellRect(cx, cy, 1, 1, query_dictItemsInCellRect);
 			foreach (BumpID item in dictItemsInCellRect)
 			{
 				Rect2f rect = rects[item];
